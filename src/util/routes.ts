@@ -23,6 +23,8 @@ export const routes: Group[] = [
   }
 ]
 
+export const home = '/pessoal/alocacao'
+
 type Group = {
   key: string
   label: string
