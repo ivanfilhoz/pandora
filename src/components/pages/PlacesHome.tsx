@@ -1,13 +1,4 @@
 import * as React from 'react'
-import { MainLayout } from '../templates/MainLayout'
-import { Header } from '../molecules/Header'
-import { Sider } from '../molecules/Sider'
-import { Content } from '../atoms/Content'
-import { Skeleton, Row, Col, Card, Button, Icon, Input } from 'antd'
-import { ErrorAlert } from '../molecules/ErrorAlert'
-import { RightCol } from '../atoms/RightCol'
-import { useModal } from '../../util/modal'
-import { PlaceForm } from '../organisms/PlaceForm'
 import {
   ListPlacesComponent,
   DeletePlaceComponent,
@@ -15,14 +6,21 @@ import {
   CreatePlaceComponent,
   Place
 } from '../../generated/graphql'
+import { MainLayout } from '../templates/MainLayout'
+import { Header } from '../molecules/Header'
+import { Sider } from '../molecules/Sider'
+import { Content } from '../atoms/Content'
+import { Row, Col, Button, Input } from 'antd'
+import { ErrorAlert } from '../molecules/ErrorAlert'
+import { RightCol } from '../atoms/RightCol'
+import { useModal } from '../../util/modal'
+import { PlaceForm } from '../organisms/PlaceForm'
 import { generateCRUD } from '../../util/crud'
 import { EmptyAlert } from '../molecules/EmptyAlert'
-import { CardGrid } from '../atoms/CardGrid'
 import { PlacesList } from '../organisms/PlacesList'
-import times from 'ramda/es/times'
-import identity from 'ramda/es/identity'
 import { RouteComponentProps } from 'react-router'
 import { route } from '../../util/routes'
+import { PlacesSkeleton } from '../organisms/PlacesSkeleton'
 
 export const PlacesHome: React.FunctionComponent<RouteComponentProps> = ({
   history
@@ -78,18 +76,7 @@ export const PlacesHome: React.FunctionComponent<RouteComponentProps> = ({
         >
           {({ loading, error, data }) =>
             loading ? (
-              <CardGrid>
-                {times(identity, 6).map(i => (
-                  <Card
-                    key={i}
-                    actions={[
-                      <Icon type="shop" style={{ visibility: 'hidden' }} />
-                    ]}
-                  >
-                    <Skeleton avatar paragraph={false} />
-                  </Card>
-                ))}
-              </CardGrid>
+              <PlacesSkeleton />
             ) : error ? (
               <ErrorAlert />
             ) : !data!.listPlaces!.items!.length ? (

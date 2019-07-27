@@ -1,12 +1,4 @@
 import * as React from 'react'
-import { MainLayout } from '../templates/MainLayout'
-import { Header } from '../molecules/Header'
-import { Sider } from '../molecules/Sider'
-import { Content } from '../atoms/Content'
-import { PeopleList } from '../organisms/PeopleList'
-import { Row, Button, Col, Skeleton, List } from 'antd'
-import Search from 'antd/lib/input/Search'
-import { RightCol } from '../atoms/RightCol'
 import {
   ListPeopleComponent,
   Person,
@@ -14,12 +6,19 @@ import {
   UpdatePersonComponent,
   DeletePersonComponent
 } from '../../generated/graphql'
+import { MainLayout } from '../templates/MainLayout'
+import { Header } from '../molecules/Header'
+import { Sider } from '../molecules/Sider'
+import { Content } from '../atoms/Content'
+import { PeopleList } from '../organisms/PeopleList'
+import { Row, Button, Col } from 'antd'
+import Search from 'antd/lib/input/Search'
+import { RightCol } from '../atoms/RightCol'
 import { ErrorAlert } from '../molecules/ErrorAlert'
 import { useModal } from '../../util/modal'
 import { PersonForm } from '../organisms/PersonForm'
 import { generateCRUD } from '../../util/crud'
-import times from 'ramda/es/times'
-import identity from 'ramda/es/identity'
+import { PeopleSkeleton } from '../organisms/PeopleSkeleton'
 
 export const PeopleHome: React.FunctionComponent = () => {
   const [EditModal, showEditModal] = useModal(PersonForm)
@@ -55,13 +54,7 @@ export const PeopleHome: React.FunctionComponent = () => {
         <ListPeopleComponent>
           {({ loading, error, data }) =>
             loading ? (
-              <List>
-                {times(identity, 5).map(i => (
-                  <List.Item key={i}>
-                    <Skeleton avatar paragraph={false} />
-                  </List.Item>
-                ))}
-              </List>
+              <PeopleSkeleton />
             ) : error ? (
               <ErrorAlert />
             ) : (
