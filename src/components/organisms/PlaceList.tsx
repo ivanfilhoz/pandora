@@ -5,12 +5,14 @@ import { CardGrid } from '../atoms/CardGrid'
 
 interface IProps {
   places: Place[]
+  onOpen: (place: Place) => void
   onEdit: (place: Place) => void
   onDelete: (place: Place) => void
 }
 
 export const PlaceList: React.FunctionComponent<IProps> = ({
   places,
+  onOpen,
   onEdit,
   onDelete
 }) => {
@@ -20,8 +22,13 @@ export const PlaceList: React.FunctionComponent<IProps> = ({
         <Card
           key={place!.id}
           hoverable
+          onClick={() => onOpen(place)}
           actions={[
-            <Icon type="calendar" title="Alocação" />,
+            <Icon
+              type="calendar"
+              title="Alocação"
+              onClick={() => onOpen(place)}
+            />,
             <Icon type="edit" title="Editar" onClick={() => onEdit(place)} />,
             <Icon type="link" />,
             <Icon

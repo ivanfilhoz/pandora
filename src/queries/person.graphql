@@ -4,7 +4,6 @@ query listPeople($filter: TablePersonFilterInput) {
       id
       photo
       name
-      battalion
       department
     }
   }

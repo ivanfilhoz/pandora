@@ -300,7 +300,7 @@ export type ListPeopleQuery = { __typename?: "Query" } & {
           Maybe<
             { __typename?: "Person" } & Pick<
               Person,
-              "id" | "photo" | "name" | "battalion" | "department"
+              "id" | "photo" | "name" | "department"
             >
           >
         >
@@ -359,6 +359,24 @@ export type ListPlacesQuery = { __typename?: "Query" } & {
   >;
 };
 
+export type GetPlaceQueryVariables = {
+  id: Scalars["ID"];
+};
+
+export type GetPlaceQuery = { __typename?: "Query" } & {
+  getPlace: Maybe<
+    { __typename?: "Place" } & Pick<
+      Place,
+      | "id"
+      | "name"
+      | "headcount"
+      | "personPrice"
+      | "leaderPrice"
+      | "retailPrice"
+    >
+  >;
+};
+
 export type CreatePlaceMutationVariables = {
   input: CreatePlaceInput;
 };
@@ -390,7 +408,6 @@ export const ListPeopleDocument = gql`
         id
         photo
         name
-        battalion
         department
       }
     }
@@ -619,6 +636,53 @@ export function withListPlaces<TProps, TChildProps = {}>(
     ListPlacesProps<TChildProps>
   >(ListPlacesDocument, {
     alias: "withListPlaces",
+    ...operationOptions
+  });
+}
+export const GetPlaceDocument = gql`
+  query getPlace($id: ID!) {
+    getPlace(id: $id) {
+      id
+      name
+      headcount
+      personPrice
+      leaderPrice
+      retailPrice
+    }
+  }
+`;
+export type GetPlaceComponentProps = Omit<
+  ReactApollo.QueryProps<GetPlaceQuery, GetPlaceQueryVariables>,
+  "query"
+> &
+  ({ variables: GetPlaceQueryVariables; skip?: false } | { skip: true });
+
+export const GetPlaceComponent = (props: GetPlaceComponentProps) => (
+  <ReactApollo.Query<GetPlaceQuery, GetPlaceQueryVariables>
+    query={GetPlaceDocument}
+    {...props}
+  />
+);
+
+export type GetPlaceProps<TChildProps = {}> = Partial<
+  ReactApollo.DataProps<GetPlaceQuery, GetPlaceQueryVariables>
+> &
+  TChildProps;
+export function withGetPlace<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    GetPlaceQuery,
+    GetPlaceQueryVariables,
+    GetPlaceProps<TChildProps>
+  >
+) {
+  return ReactApollo.withQuery<
+    TProps,
+    GetPlaceQuery,
+    GetPlaceQueryVariables,
+    GetPlaceProps<TChildProps>
+  >(GetPlaceDocument, {
+    alias: "withGetPlace",
     ...operationOptions
   });
 }

@@ -10,7 +10,6 @@ export const Allocator: React.FunctionComponent = () => {
 
   const AllocationIndicator = ({ date }: { date: Moment }) => {
     const day = data.filter(allocation => allocation.date.isSame(date, 'day'))
-    console.log(data)
 
     if (day.length === 10) {
       return <Icon type="check-circle" theme="twoTone" twoToneColor="green" />

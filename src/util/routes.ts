@@ -1,5 +1,23 @@
+import find from 'ramda/es/find'
+import propEq from 'ramda/es/propEq'
 import { PeopleHome } from '../components/pages/PeopleHome'
 import { PlacesHome } from '../components/pages/PlacesHome'
+import { PlaceAllocation } from '../components/pages/PlaceAllocation'
+import reduce from 'ramda/es/reduce'
+import keys from 'ramda/es/keys'
+import pipe from 'ramda/es/pipe'
+import prop from 'ramda/es/prop'
+import replace from 'ramda/es/replace'
+
+export const fillRoute = (obj: Params) => (path: string) =>
+  reduce((prev, next) => replace(':' + next, obj[next], prev), path, keys(obj))
+
+export const route = (key: string, params: Params = {}) =>
+  pipe(
+    find(propEq('key', key))!,
+    prop('path'),
+    fillRoute(params)
+  )(routes)
 
 export const menu: Group[] = [
   {
@@ -30,16 +48,23 @@ export const menu: Group[] = [
 
 export const routes: Route[] = [
   {
+    key: 'places',
     path: '/estabelecimentos',
     component: PlacesHome
   },
   {
+    key: 'place-allocation',
+    path: '/estabelecimentos/:id',
+    component: PlaceAllocation
+  },
+  {
+    key: 'people',
     path: '/pessoal',
     component: PeopleHome
   }
 ]
 
-export const home = '/estabelecimentos'
+export const home = routes[0]
 
 type Group = {
   key: string
@@ -55,6 +80,11 @@ type Link = {
 }
 
 type Route = {
+  key: string
   path: string
   component: React.FunctionComponent
+}
+
+type Params = {
+  [key: string]: string
 }

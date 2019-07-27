@@ -4,7 +4,7 @@ import { Header } from '../molecules/Header'
 import { Sider } from '../molecules/Sider'
 import { Content } from '../atoms/Content'
 import { Skeleton, Row, Col, Card, Button, Icon, Input } from 'antd'
-import { ErrorAlert } from '../atoms/ErrorAlert'
+import { ErrorAlert } from '../molecules/ErrorAlert'
 import { RightCol } from '../atoms/RightCol'
 import { useModal } from '../../util/modal'
 import { PlaceForm } from '../organisms/PlaceForm'
@@ -16,13 +16,17 @@ import {
   Place
 } from '../../generated/graphql'
 import { generateCRUD } from '../../util/crud'
-import { EmptyAlert } from '../atoms/EmptyAlert'
+import { EmptyAlert } from '../molecules/EmptyAlert'
 import { CardGrid } from '../atoms/CardGrid'
 import { PlaceList } from '../organisms/PlaceList'
 import times from 'ramda/es/times'
 import identity from 'ramda/es/identity'
+import { RouteComponentProps } from 'react-router'
+import { route } from '../../util/routes'
 
-export const PlacesHome: React.FunctionComponent = () => {
+export const PlacesHome: React.FunctionComponent<RouteComponentProps> = ({
+  history
+}) => {
   const [filter, setFilter] = React.useState('')
   const applyFilter = () =>
     filter
@@ -78,7 +82,9 @@ export const PlacesHome: React.FunctionComponent = () => {
                 {times(identity, 6).map(i => (
                   <Card
                     key={i}
-                    actions={[<Icon style={{ visibility: 'hidden' }} />]}
+                    actions={[
+                      <Icon type="shop" style={{ visibility: 'hidden' }} />
+                    ]}
                   >
                     <Skeleton avatar paragraph={false} />
                   </Card>
@@ -95,6 +101,11 @@ export const PlacesHome: React.FunctionComponent = () => {
                     {deletePlace => (
                       <PlaceList
                         places={data!.listPlaces!.items! as Place[]}
+                        onOpen={place =>
+                          history.push(
+                            route('place-allocation', { id: place.id })
+                          )
+                        }
                         onEdit={place => update(updatePlace, place!)}
                         onDelete={place => remove(deletePlace, place!)}
                       />

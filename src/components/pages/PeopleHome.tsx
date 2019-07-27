@@ -14,7 +14,7 @@ import {
   UpdatePersonComponent,
   DeletePersonComponent
 } from '../../generated/graphql'
-import { ErrorAlert } from '../atoms/ErrorAlert'
+import { ErrorAlert } from '../molecules/ErrorAlert'
 import { useModal } from '../../util/modal'
 import { PersonForm } from '../organisms/PersonForm'
 import { generateCRUD } from '../../util/crud'

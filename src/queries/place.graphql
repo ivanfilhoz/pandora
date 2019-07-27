@@ -11,6 +11,17 @@ query listPlaces($filter: TablePlaceFilterInput) {
   }
 }
 
+query getPlace($id: ID!) {
+  getPlace(id: $id) {
+    id
+    name
+    headcount
+    personPrice
+    leaderPrice
+    retailPrice
+  }
+}
+
 mutation createPlace($input: CreatePlaceInput!) {
   createPlace(input: $input) {
     id
