@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { MainLayout } from '../templates/MainLayout'
-import { Header } from '../atoms/Header'
-import { Sider } from '../atoms/Sider'
+import { Header } from '../molecules/Header'
+import { Sider } from '../molecules/Sider'
 import { Content } from '../atoms/Content'
 import { Skeleton, Row, Col, Card, Avatar, Button, Icon } from 'antd'
 import { ErrorAlert } from '../atoms/ErrorAlert'
@@ -47,7 +47,7 @@ export const PlacesHome: React.FunctionComponent = () => {
                 </Button>
               )}
             </CreatePlaceComponent>
-            <Button>Exportar</Button>
+            <Button disabled>Exportar</Button>
           </RightCol>
         </Row>
         <ListPlacesComponent notifyOnNetworkStatusChange>
@@ -72,11 +72,12 @@ export const PlacesHome: React.FunctionComponent = () => {
                     key={place!.id}
                     hoverable
                     actions={[
-                      <Icon type="calendar" />,
+                      <Icon type="calendar" title="Alocação" />,
                       <UpdatePlaceComponent>
                         {updatePlace => (
                           <Icon
                             type="edit"
+                            title="Editar"
                             onClick={handleUpdate(updatePlace, place!)}
                           />
                         )}
@@ -86,6 +87,7 @@ export const PlacesHome: React.FunctionComponent = () => {
                         {deletePlace => (
                           <Icon
                             type="delete"
+                            title="Excluir"
                             onClick={handleDelete(deletePlace, place!)}
                           />
                         )}

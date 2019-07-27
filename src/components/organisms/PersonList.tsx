@@ -1,48 +1,51 @@
 import * as React from 'react'
-import { List, Skeleton, Avatar, Tag } from 'antd'
-import faker = require('faker/locale/pt_BR')
+import { List, Avatar, Tag, Icon, Button } from 'antd'
+import { Person } from '../../generated/graphql'
 const { Item } = List
 
-export const PersonList: React.FunctionComponent = () => {
-  const data: Person[] = mock()
+interface IProps {
+  people: Person[]
+  onEdit: (person: Person) => void
+  onDelete: (person: Person) => void
+}
 
+export const PersonList: React.FunctionComponent<IProps> = ({
+  people,
+  onEdit,
+  onDelete
+}) => {
   return (
     <List
       className="demo-loadmore-list"
       itemLayout="horizontal"
-      dataSource={data}
+      dataSource={people}
       renderItem={person => (
-        <Item actions={[<a>editar</a>, <a>excluir</a>]}>
+        <Item
+          actions={[
+            <Button
+              shape="circle"
+              icon="edit"
+              title="Editar"
+              onClick={() => onEdit(person)}
+            />,
+            <Button
+              shape="circle"
+              icon="delete"
+              title="Excluir"
+              onClick={() => onDelete(person)}
+            />
+          ]}
+        >
           <Item.Meta
             avatar={<Avatar src={require('../../../assets/photo.jpg')} />}
             title={<a href="#">{person.name}</a>}
-            description={person.phone}
+            description={person.department || ''}
           />
           <div>
-            <Tag color={person.allocated ? 'green' : 'orange'}>
-              {person.allocated ? 'Alocado' : 'Pendente'}
-            </Tag>
+            <Tag color={'green'}>{'Regular'}</Tag>
           </div>
         </Item>
       )}
     />
   )
 }
-
-type Person = {
-  name: string
-  phone: string
-  email: string
-  allocated: boolean
-}
-
-const generate = () =>
-  ({
-    name: faker.name.findName(),
-    phone: faker.phone.phoneNumber(),
-    email: faker.internet.email().toLowerCase(),
-    allocated: !!Math.round(Math.random())
-  } as Person)
-
-const mock = () =>
-  Array.apply(null, { length: 12 }).map(Function.call, () => generate())
