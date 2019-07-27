@@ -37,7 +37,11 @@ export const PersonList: React.FunctionComponent<IProps> = ({
           ]}
         >
           <Item.Meta
-            avatar={<Avatar src={require('../../../assets/photo.jpg')} />}
+            avatar={
+              <Avatar
+                src={person.photo || require('../../../assets/photo.jpg')}
+              />
+            }
             title={<a href="#">{person.name}</a>}
             description={person.department || ''}
           />

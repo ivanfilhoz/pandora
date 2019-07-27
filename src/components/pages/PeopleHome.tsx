@@ -22,7 +22,7 @@ import { numbers } from '../../util/misc'
 
 export const PeopleHome: React.FunctionComponent = () => {
   const [EditModal, showEditModal] = useModal(PersonForm)
-  const { handleCreate, handleUpdate, handleDelete } = generateCRUD<Person>({
+  const { create, update, remove } = generateCRUD<Person>({
     entityName: 'Pessoa',
     entityArticle: 'a',
     editModal: showEditModal,
@@ -42,7 +42,7 @@ export const PeopleHome: React.FunctionComponent = () => {
                 <Button
                   type="primary"
                   style={{ marginRight: 12 }}
-                  onClick={handleCreate(createPerson)}
+                  onClick={() => create(createPerson)}
                 >
                   Cadastrar pessoa
                 </Button>
@@ -70,10 +70,8 @@ export const PeopleHome: React.FunctionComponent = () => {
                     {deletePerson => (
                       <PersonList
                         people={data!.listPeople!.items! as Person[]}
-                        onEdit={person => handleUpdate(updatePerson, person!)()}
-                        onDelete={person =>
-                          handleDelete(deletePerson, person!)()
-                        }
+                        onEdit={person => update(updatePerson, person!)}
+                        onDelete={person => remove(deletePerson, person!)}
                       />
                     )}
                   </DeletePersonComponent>

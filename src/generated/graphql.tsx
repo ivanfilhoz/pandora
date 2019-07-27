@@ -288,7 +288,9 @@ export type UpdatePlaceInput = {
   leaderPrice?: Maybe<Scalars["Int"]>;
   retailPrice?: Maybe<Scalars["Int"]>;
 };
-export type ListPeopleQueryVariables = {};
+export type ListPeopleQueryVariables = {
+  filter?: Maybe<TablePersonFilterInput>;
+};
 
 export type ListPeopleQuery = { __typename?: "Query" } & {
   listPeople: Maybe<
@@ -331,7 +333,9 @@ export type DeletePersonMutation = { __typename?: "Mutation" } & {
   deletePerson: Maybe<{ __typename?: "Person" } & Pick<Person, "id">>;
 };
 
-export type ListPlacesQueryVariables = {};
+export type ListPlacesQueryVariables = {
+  filter?: Maybe<TablePlaceFilterInput>;
+};
 
 export type ListPlacesQuery = { __typename?: "Query" } & {
   listPlaces: Maybe<
@@ -380,8 +384,8 @@ export type DeletePlaceMutation = { __typename?: "Mutation" } & {
 };
 
 export const ListPeopleDocument = gql`
-  query listPeople {
-    listPeople {
+  query listPeople($filter: TablePersonFilterInput) {
+    listPeople(filter: $filter) {
       items {
         id
         photo
@@ -571,8 +575,8 @@ export function withDeletePerson<TProps, TChildProps = {}>(
   });
 }
 export const ListPlacesDocument = gql`
-  query listPlaces {
-    listPlaces {
+  query listPlaces($filter: TablePlaceFilterInput) {
+    listPlaces(filter: $filter) {
       items {
         id
         name

@@ -2214,46 +2214,6 @@
         "args": []
       },
       {
-        "name": "aws_subscribe",
-        "description": "Tells the service which mutation triggers this subscription.",
-        "locations": ["FIELD_DEFINITION"],
-        "args": [
-          {
-            "name": "mutations",
-            "description": "List of mutations which will trigger this subscription when they are called.",
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": { "kind": "SCALAR", "name": "String", "ofType": null }
-            },
-            "defaultValue": null
-          }
-        ]
-      },
-      {
-        "name": "aws_api_key",
-        "description": "Tells the service this field/object has access authorized by an API key.",
-        "locations": ["OBJECT", "FIELD_DEFINITION"],
-        "args": []
-      },
-      {
-        "name": "aws_cognito_user_pools",
-        "description": "Tells the service this field/object has access authorized by a Cognito User Pools token.",
-        "locations": ["OBJECT", "FIELD_DEFINITION"],
-        "args": [
-          {
-            "name": "cognito_groups",
-            "description": "List of cognito user pool groups which have access on this field",
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": { "kind": "SCALAR", "name": "String", "ofType": null }
-            },
-            "defaultValue": null
-          }
-        ]
-      },
-      {
         "name": "aws_publish",
         "description": "Tells the service which subscriptions will be published to when this mutation is\ncalled. This directive is deprecated use @aws_susbscribe directive instead.",
         "locations": ["FIELD_DEFINITION"],
@@ -2294,10 +2254,50 @@
         ]
       },
       {
+        "name": "aws_api_key",
+        "description": "Tells the service this field/object has access authorized by an API key.",
+        "locations": ["OBJECT", "FIELD_DEFINITION"],
+        "args": []
+      },
+      {
+        "name": "aws_cognito_user_pools",
+        "description": "Tells the service this field/object has access authorized by a Cognito User Pools token.",
+        "locations": ["OBJECT", "FIELD_DEFINITION"],
+        "args": [
+          {
+            "name": "cognito_groups",
+            "description": "List of cognito user pool groups which have access on this field",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "String", "ofType": null }
+            },
+            "defaultValue": null
+          }
+        ]
+      },
+      {
         "name": "aws_oidc",
         "description": "Tells the service this field/object has access authorized by an OIDC token.",
         "locations": ["OBJECT", "FIELD_DEFINITION"],
         "args": []
+      },
+      {
+        "name": "aws_subscribe",
+        "description": "Tells the service which mutation triggers this subscription.",
+        "locations": ["FIELD_DEFINITION"],
+        "args": [
+          {
+            "name": "mutations",
+            "description": "List of mutations which will trigger this subscription when they are called.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "String", "ofType": null }
+            },
+            "defaultValue": null
+          }
+        ]
       },
       {
         "name": "skip",

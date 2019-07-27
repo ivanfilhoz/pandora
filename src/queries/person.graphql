@@ -1,5 +1,5 @@
-query listPeople {
-  listPeople {
+query listPeople($filter: TablePersonFilterInput) {
+  listPeople(filter: $filter) {
     items {
       id
       photo

@@ -3,10 +3,8 @@ import { MainLayout } from '../templates/MainLayout'
 import { Header } from '../molecules/Header'
 import { Sider } from '../molecules/Sider'
 import { Content } from '../atoms/Content'
-import { Skeleton, Row, Col, Card, Avatar, Button, Icon } from 'antd'
+import { Skeleton, Row, Col, Card, Button, Icon, Input } from 'antd'
 import { ErrorAlert } from '../atoms/ErrorAlert'
-import Meta from 'antd/lib/card/Meta'
-import Search from 'antd/lib/input/Search'
 import { RightCol } from '../atoms/RightCol'
 import { useModal } from '../../util/modal'
 import { PlaceForm } from '../organisms/PlaceForm'
@@ -18,10 +16,26 @@ import {
   Place
 } from '../../generated/graphql'
 import { generateCRUD } from '../../util/crud'
+import { EmptyAlert } from '../atoms/EmptyAlert'
+import { numbers } from '../../util/misc'
+import { CardGrid } from '../atoms/CardGrid'
+import { PlaceList } from '../organisms/PlaceList'
 
 export const PlacesHome: React.FunctionComponent = () => {
+  const [filter, setFilter] = React.useState('')
+  const applyFilter = () =>
+    filter
+      ? {
+          filter: {
+            name: {
+              contains: filter
+            }
+          }
+        }
+      : undefined
+
   const [EditModal, showEditModal] = useModal(PlaceForm)
-  const { handleCreate, handleUpdate, handleDelete } = generateCRUD<Place>({
+  const { create, update, remove } = generateCRUD<Place>({
     entityName: 'Estabelecimento',
     entityArticle: 'o',
     editModal: showEditModal,
@@ -33,7 +47,10 @@ export const PlacesHome: React.FunctionComponent = () => {
       <Content>
         <Row style={{ marginBottom: 24 }}>
           <Col span={8}>
-            <Search placeholder="Pesquisar por nome" />
+            <Input.Search
+              placeholder="Pesquisar por nome"
+              onSearch={setFilter}
+            />
           </Col>
           <RightCol span={16}>
             <CreatePlaceComponent>
@@ -41,7 +58,7 @@ export const PlacesHome: React.FunctionComponent = () => {
                 <Button
                   type="primary"
                   style={{ marginRight: 12 }}
-                  onClick={handleCreate(createPlace)}
+                  onClick={() => create(createPlace)}
                 >
                   Novo estabelecimento
                 </Button>
@@ -50,58 +67,40 @@ export const PlacesHome: React.FunctionComponent = () => {
             <Button disabled>Exportar</Button>
           </RightCol>
         </Row>
-        <ListPlacesComponent notifyOnNetworkStatusChange>
+        <ListPlacesComponent
+          variables={applyFilter()}
+          notifyOnNetworkStatusChange
+        >
           {({ loading, error, data }) =>
             loading ? (
-              <Skeleton />
-            ) : error ? (
-              <ErrorAlert />
-            ) : (
-              <div
-                style={{
-                  flex: '1 0 300px',
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(3, 1fr)',
-                  gridTemplateRows: 'min-content',
-                  gridGap: 12,
-                  height: 'auto'
-                }}
-              >
-                {data!.listPlaces!.items!.map(place => (
+              <CardGrid>
+                {numbers(6).map(i => (
                   <Card
-                    key={place!.id}
-                    hoverable
-                    actions={[
-                      <Icon type="calendar" title="Alocação" />,
-                      <UpdatePlaceComponent>
-                        {updatePlace => (
-                          <Icon
-                            type="edit"
-                            title="Editar"
-                            onClick={handleUpdate(updatePlace, place!)}
-                          />
-                        )}
-                      </UpdatePlaceComponent>,
-                      <Icon type="link" />,
-                      <DeletePlaceComponent>
-                        {deletePlace => (
-                          <Icon
-                            type="delete"
-                            title="Excluir"
-                            onClick={handleDelete(deletePlace, place!)}
-                          />
-                        )}
-                      </DeletePlaceComponent>
-                    ]}
+                    key={i}
+                    actions={[<Icon style={{ visibility: 'hidden' }} />]}
                   >
-                    <Meta
-                      avatar={<Avatar alt="Sem foto" icon="shop" />}
-                      title={place!.name}
-                      description={place!.headcount + ' seguranças'}
-                    />
+                    <Skeleton avatar paragraph={false} />
                   </Card>
                 ))}
-              </div>
+              </CardGrid>
+            ) : error ? (
+              <ErrorAlert />
+            ) : !data!.listPlaces!.items!.length ? (
+              <EmptyAlert />
+            ) : (
+              <UpdatePlaceComponent>
+                {updatePlace => (
+                  <DeletePlaceComponent>
+                    {deletePlace => (
+                      <PlaceList
+                        places={data!.listPlaces!.items! as Place[]}
+                        onEdit={place => update(updatePlace, place!)}
+                        onDelete={place => remove(deletePlace, place!)}
+                      />
+                    )}
+                  </DeletePlaceComponent>
+                )}
+              </UpdatePlaceComponent>
             )
           }
         </ListPlacesComponent>

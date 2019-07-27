@@ -4,9 +4,9 @@ import { message, Modal } from 'antd'
 import { ModalProps } from './modal'
 
 type CrudHook<T> = {
-  handleCreate: (mutation: MutationFn) => () => void
-  handleUpdate: (mutation: MutationFn, entity: T) => () => void
-  handleDelete: (mutation: MutationFn, entity: T) => () => void
+  create: (mutation: MutationFn) => void
+  update: (mutation: MutationFn, entity: T) => void
+  remove: (mutation: MutationFn, entity: T) => void
 }
 
 export interface CrudModal<T> extends ModalProps {
@@ -33,7 +33,7 @@ export const generateCRUD = <T extends Entity>({
   editModal,
   refetch
 }: IAttributes<T>): CrudHook<T> => {
-  const handleCreate = (mutation: MutationFn) => () =>
+  const create = (mutation: MutationFn) =>
     editModal({
       onOk: async (input: Partial<T>) => {
         try {
@@ -51,7 +51,7 @@ export const generateCRUD = <T extends Entity>({
       }
     })
 
-  const handleUpdate = (mutation: MutationFn, entity: T) => () =>
+  const update = (mutation: MutationFn, entity: T) =>
     editModal({
       entity,
       onOk: async (input: Partial<T>) => {
@@ -70,7 +70,7 @@ export const generateCRUD = <T extends Entity>({
       }
     })
 
-  const handleDelete = (mutation: MutationFn, entity: T) => () =>
+  const remove = (mutation: MutationFn, entity: T) =>
     Modal.confirm({
       title: 'Esta ação é irreversível!',
       content: `Tem certeza que deseja excluir ${x} ${entityName.toLowerCase()} "${
@@ -95,5 +95,5 @@ export const generateCRUD = <T extends Entity>({
       }
     })
 
-  return { handleCreate, handleUpdate, handleDelete }
+  return { create, update, remove }
 }
