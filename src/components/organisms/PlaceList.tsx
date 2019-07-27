@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Avatar, Icon, Card } from 'antd'
+import { Avatar, Icon, Card, message } from 'antd'
 import { Place } from '../../generated/graphql'
 import { CardGrid } from '../atoms/CardGrid'
 
@@ -16,6 +16,15 @@ export const PlaceList: React.FunctionComponent<IProps> = ({
   onEdit,
   onDelete
 }) => {
+  const unbubble = (callback: () => void) => (event: React.MouseEvent) => {
+    event.stopPropagation()
+    callback()
+  }
+
+  const onReport = () => {
+    message.info('O relatório ainda não está disponível!')
+  }
+
   return (
     <CardGrid>
       {places.map(place => (
@@ -24,17 +33,21 @@ export const PlaceList: React.FunctionComponent<IProps> = ({
           hoverable
           onClick={() => onOpen(place)}
           actions={[
+            <Icon type="calendar" title="Alocação" />,
             <Icon
-              type="calendar"
-              title="Alocação"
-              onClick={() => onOpen(place)}
+              type="line-chart"
+              title="Relatório"
+              onClick={unbubble(() => onReport())}
             />,
-            <Icon type="edit" title="Editar" onClick={() => onEdit(place)} />,
-            <Icon type="link" />,
+            <Icon
+              type="edit"
+              title="Editar"
+              onClick={unbubble(() => onEdit(place))}
+            />,
             <Icon
               type="delete"
               title="Excluir"
-              onClick={() => onDelete(place)}
+              onClick={unbubble(() => onDelete(place))}
             />
           ]}
         >
