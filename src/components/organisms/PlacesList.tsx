@@ -10,7 +10,7 @@ interface IProps {
   onDelete: (place: Place) => void
 }
 
-export const PlaceList: React.FunctionComponent<IProps> = ({
+export const PlacesList: React.FunctionComponent<IProps> = ({
   places,
   onOpen,
   onEdit,

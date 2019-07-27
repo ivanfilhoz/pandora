@@ -3,7 +3,7 @@ import { MainLayout } from '../templates/MainLayout'
 import { Header } from '../molecules/Header'
 import { Sider } from '../molecules/Sider'
 import { Content } from '../atoms/Content'
-import { PersonList } from '../organisms/PersonList'
+import { PeopleList } from '../organisms/PeopleList'
 import { Row, Button, Col, Skeleton, List } from 'antd'
 import Search from 'antd/lib/input/Search'
 import { RightCol } from '../atoms/RightCol'
@@ -69,7 +69,7 @@ export const PeopleHome: React.FunctionComponent = () => {
                 {updatePerson => (
                   <DeletePersonComponent>
                     {deletePerson => (
-                      <PersonList
+                      <PeopleList
                         people={data!.listPeople!.items! as Person[]}
                         onEdit={person => update(updatePerson, person!)}
                         onDelete={person => remove(deletePerson, person!)}

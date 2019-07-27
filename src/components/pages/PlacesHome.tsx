@@ -18,7 +18,7 @@ import {
 import { generateCRUD } from '../../util/crud'
 import { EmptyAlert } from '../molecules/EmptyAlert'
 import { CardGrid } from '../atoms/CardGrid'
-import { PlaceList } from '../organisms/PlaceList'
+import { PlacesList } from '../organisms/PlacesList'
 import times from 'ramda/es/times'
 import identity from 'ramda/es/identity'
 import { RouteComponentProps } from 'react-router'
@@ -99,7 +99,7 @@ export const PlacesHome: React.FunctionComponent<RouteComponentProps> = ({
                 {updatePlace => (
                   <DeletePlaceComponent>
                     {deletePlace => (
-                      <PlaceList
+                      <PlacesList
                         places={data!.listPlaces!.items! as Place[]}
                         onOpen={place =>
                           history.push(
