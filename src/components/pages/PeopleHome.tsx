@@ -18,7 +18,8 @@ import { ErrorAlert } from '../atoms/ErrorAlert'
 import { useModal } from '../../util/modal'
 import { PersonForm } from '../organisms/PersonForm'
 import { generateCRUD } from '../../util/crud'
-import { numbers } from '../../util/misc'
+import times from 'ramda/es/times'
+import identity from 'ramda/es/identity'
 
 export const PeopleHome: React.FunctionComponent = () => {
   const [EditModal, showEditModal] = useModal(PersonForm)
@@ -55,7 +56,7 @@ export const PeopleHome: React.FunctionComponent = () => {
           {({ loading, error, data }) =>
             loading ? (
               <List>
-                {numbers(5).map(i => (
+                {times(identity, 5).map(i => (
                   <List.Item key={i}>
                     <Skeleton avatar paragraph={false} />
                   </List.Item>

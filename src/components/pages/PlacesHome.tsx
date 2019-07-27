@@ -17,9 +17,10 @@ import {
 } from '../../generated/graphql'
 import { generateCRUD } from '../../util/crud'
 import { EmptyAlert } from '../atoms/EmptyAlert'
-import { numbers } from '../../util/misc'
 import { CardGrid } from '../atoms/CardGrid'
 import { PlaceList } from '../organisms/PlaceList'
+import times from 'ramda/es/times'
+import identity from 'ramda/es/identity'
 
 export const PlacesHome: React.FunctionComponent = () => {
   const [filter, setFilter] = React.useState('')
@@ -74,7 +75,7 @@ export const PlacesHome: React.FunctionComponent = () => {
           {({ loading, error, data }) =>
             loading ? (
               <CardGrid>
-                {numbers(6).map(i => (
+                {times(identity, 6).map(i => (
                   <Card
                     key={i}
                     actions={[<Icon style={{ visibility: 'hidden' }} />]}
