@@ -43,34 +43,6 @@ export const Sider: React.FunctionComponent<IProps> = ({ path }) => (
           </SubMenu>
         )
       )}
-      <SubMenu
-        key="settings"
-        title={
-          <span>
-            <Icon type="laptop" />
-            Configurações
-          </span>
-        }
-      >
-        <Item key="5">option5</Item>
-        <Item key="6">option6</Item>
-        <Item key="7">option7</Item>
-        <Item key="8">option8</Item>
-      </SubMenu>
-      <SubMenu
-        key="alerts"
-        title={
-          <span>
-            <Icon type="notification" />
-            Alertas
-          </span>
-        }
-      >
-        <Item key="9">option9</Item>
-        <Item key="10">option10</Item>
-        <Item key="11">option11</Item>
-        <Item key="12">option12</Item>
-      </SubMenu>
     </Menu>
   </RawSider>
 )
