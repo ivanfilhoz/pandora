@@ -307,6 +307,30 @@ export type ListPeopleQuery = { __typename?: "Query" } & {
   >;
 };
 
+export type CreatePersonMutationVariables = {
+  input: CreatePersonInput;
+};
+
+export type CreatePersonMutation = { __typename?: "Mutation" } & {
+  createPerson: Maybe<{ __typename?: "Person" } & Pick<Person, "id">>;
+};
+
+export type UpdatePersonMutationVariables = {
+  input: UpdatePersonInput;
+};
+
+export type UpdatePersonMutation = { __typename?: "Mutation" } & {
+  updatePerson: Maybe<{ __typename?: "Person" } & Pick<Person, "id">>;
+};
+
+export type DeletePersonMutationVariables = {
+  input: DeletePersonInput;
+};
+
+export type DeletePersonMutation = { __typename?: "Mutation" } & {
+  deletePerson: Maybe<{ __typename?: "Person" } & Pick<Person, "id">>;
+};
+
 export type ListPlacesQueryVariables = {};
 
 export type ListPlacesQuery = { __typename?: "Query" } & {
@@ -329,6 +353,30 @@ export type ListPlacesQuery = { __typename?: "Query" } & {
       >;
     }
   >;
+};
+
+export type CreatePlaceMutationVariables = {
+  input: CreatePlaceInput;
+};
+
+export type CreatePlaceMutation = { __typename?: "Mutation" } & {
+  createPlace: Maybe<{ __typename?: "Place" } & Pick<Place, "id">>;
+};
+
+export type UpdatePlaceMutationVariables = {
+  input: UpdatePlaceInput;
+};
+
+export type UpdatePlaceMutation = { __typename?: "Mutation" } & {
+  updatePlace: Maybe<{ __typename?: "Place" } & Pick<Place, "id">>;
+};
+
+export type DeletePlaceMutationVariables = {
+  input: DeletePlaceInput;
+};
+
+export type DeletePlaceMutation = { __typename?: "Mutation" } & {
+  deletePlace: Maybe<{ __typename?: "Place" } & Pick<Place, "id">>;
 };
 
 export const ListPeopleDocument = gql`
@@ -378,6 +426,150 @@ export function withListPeople<TProps, TChildProps = {}>(
     ...operationOptions
   });
 }
+export const CreatePersonDocument = gql`
+  mutation createPerson($input: CreatePersonInput!) {
+    createPerson(input: $input) {
+      id
+    }
+  }
+`;
+export type CreatePersonMutationFn = ReactApollo.MutationFn<
+  CreatePersonMutation,
+  CreatePersonMutationVariables
+>;
+export type CreatePersonComponentProps = Omit<
+  ReactApollo.MutationProps<
+    CreatePersonMutation,
+    CreatePersonMutationVariables
+  >,
+  "mutation"
+>;
+
+export const CreatePersonComponent = (props: CreatePersonComponentProps) => (
+  <ReactApollo.Mutation<CreatePersonMutation, CreatePersonMutationVariables>
+    mutation={CreatePersonDocument}
+    {...props}
+  />
+);
+
+export type CreatePersonProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<CreatePersonMutation, CreatePersonMutationVariables>
+> &
+  TChildProps;
+export function withCreatePerson<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    CreatePersonMutation,
+    CreatePersonMutationVariables,
+    CreatePersonProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    CreatePersonMutation,
+    CreatePersonMutationVariables,
+    CreatePersonProps<TChildProps>
+  >(CreatePersonDocument, {
+    alias: "withCreatePerson",
+    ...operationOptions
+  });
+}
+export const UpdatePersonDocument = gql`
+  mutation updatePerson($input: UpdatePersonInput!) {
+    updatePerson(input: $input) {
+      id
+    }
+  }
+`;
+export type UpdatePersonMutationFn = ReactApollo.MutationFn<
+  UpdatePersonMutation,
+  UpdatePersonMutationVariables
+>;
+export type UpdatePersonComponentProps = Omit<
+  ReactApollo.MutationProps<
+    UpdatePersonMutation,
+    UpdatePersonMutationVariables
+  >,
+  "mutation"
+>;
+
+export const UpdatePersonComponent = (props: UpdatePersonComponentProps) => (
+  <ReactApollo.Mutation<UpdatePersonMutation, UpdatePersonMutationVariables>
+    mutation={UpdatePersonDocument}
+    {...props}
+  />
+);
+
+export type UpdatePersonProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<UpdatePersonMutation, UpdatePersonMutationVariables>
+> &
+  TChildProps;
+export function withUpdatePerson<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    UpdatePersonMutation,
+    UpdatePersonMutationVariables,
+    UpdatePersonProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    UpdatePersonMutation,
+    UpdatePersonMutationVariables,
+    UpdatePersonProps<TChildProps>
+  >(UpdatePersonDocument, {
+    alias: "withUpdatePerson",
+    ...operationOptions
+  });
+}
+export const DeletePersonDocument = gql`
+  mutation deletePerson($input: DeletePersonInput!) {
+    deletePerson(input: $input) {
+      id
+    }
+  }
+`;
+export type DeletePersonMutationFn = ReactApollo.MutationFn<
+  DeletePersonMutation,
+  DeletePersonMutationVariables
+>;
+export type DeletePersonComponentProps = Omit<
+  ReactApollo.MutationProps<
+    DeletePersonMutation,
+    DeletePersonMutationVariables
+  >,
+  "mutation"
+>;
+
+export const DeletePersonComponent = (props: DeletePersonComponentProps) => (
+  <ReactApollo.Mutation<DeletePersonMutation, DeletePersonMutationVariables>
+    mutation={DeletePersonDocument}
+    {...props}
+  />
+);
+
+export type DeletePersonProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<DeletePersonMutation, DeletePersonMutationVariables>
+> &
+  TChildProps;
+export function withDeletePerson<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    DeletePersonMutation,
+    DeletePersonMutationVariables,
+    DeletePersonProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    DeletePersonMutation,
+    DeletePersonMutationVariables,
+    DeletePersonProps<TChildProps>
+  >(DeletePersonDocument, {
+    alias: "withDeletePerson",
+    ...operationOptions
+  });
+}
 export const ListPlacesDocument = gql`
   query listPlaces {
     listPlaces {
@@ -423,6 +615,141 @@ export function withListPlaces<TProps, TChildProps = {}>(
     ListPlacesProps<TChildProps>
   >(ListPlacesDocument, {
     alias: "withListPlaces",
+    ...operationOptions
+  });
+}
+export const CreatePlaceDocument = gql`
+  mutation createPlace($input: CreatePlaceInput!) {
+    createPlace(input: $input) {
+      id
+    }
+  }
+`;
+export type CreatePlaceMutationFn = ReactApollo.MutationFn<
+  CreatePlaceMutation,
+  CreatePlaceMutationVariables
+>;
+export type CreatePlaceComponentProps = Omit<
+  ReactApollo.MutationProps<CreatePlaceMutation, CreatePlaceMutationVariables>,
+  "mutation"
+>;
+
+export const CreatePlaceComponent = (props: CreatePlaceComponentProps) => (
+  <ReactApollo.Mutation<CreatePlaceMutation, CreatePlaceMutationVariables>
+    mutation={CreatePlaceDocument}
+    {...props}
+  />
+);
+
+export type CreatePlaceProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<CreatePlaceMutation, CreatePlaceMutationVariables>
+> &
+  TChildProps;
+export function withCreatePlace<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    CreatePlaceMutation,
+    CreatePlaceMutationVariables,
+    CreatePlaceProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    CreatePlaceMutation,
+    CreatePlaceMutationVariables,
+    CreatePlaceProps<TChildProps>
+  >(CreatePlaceDocument, {
+    alias: "withCreatePlace",
+    ...operationOptions
+  });
+}
+export const UpdatePlaceDocument = gql`
+  mutation updatePlace($input: UpdatePlaceInput!) {
+    updatePlace(input: $input) {
+      id
+    }
+  }
+`;
+export type UpdatePlaceMutationFn = ReactApollo.MutationFn<
+  UpdatePlaceMutation,
+  UpdatePlaceMutationVariables
+>;
+export type UpdatePlaceComponentProps = Omit<
+  ReactApollo.MutationProps<UpdatePlaceMutation, UpdatePlaceMutationVariables>,
+  "mutation"
+>;
+
+export const UpdatePlaceComponent = (props: UpdatePlaceComponentProps) => (
+  <ReactApollo.Mutation<UpdatePlaceMutation, UpdatePlaceMutationVariables>
+    mutation={UpdatePlaceDocument}
+    {...props}
+  />
+);
+
+export type UpdatePlaceProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<UpdatePlaceMutation, UpdatePlaceMutationVariables>
+> &
+  TChildProps;
+export function withUpdatePlace<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    UpdatePlaceMutation,
+    UpdatePlaceMutationVariables,
+    UpdatePlaceProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    UpdatePlaceMutation,
+    UpdatePlaceMutationVariables,
+    UpdatePlaceProps<TChildProps>
+  >(UpdatePlaceDocument, {
+    alias: "withUpdatePlace",
+    ...operationOptions
+  });
+}
+export const DeletePlaceDocument = gql`
+  mutation deletePlace($input: DeletePlaceInput!) {
+    deletePlace(input: $input) {
+      id
+    }
+  }
+`;
+export type DeletePlaceMutationFn = ReactApollo.MutationFn<
+  DeletePlaceMutation,
+  DeletePlaceMutationVariables
+>;
+export type DeletePlaceComponentProps = Omit<
+  ReactApollo.MutationProps<DeletePlaceMutation, DeletePlaceMutationVariables>,
+  "mutation"
+>;
+
+export const DeletePlaceComponent = (props: DeletePlaceComponentProps) => (
+  <ReactApollo.Mutation<DeletePlaceMutation, DeletePlaceMutationVariables>
+    mutation={DeletePlaceDocument}
+    {...props}
+  />
+);
+
+export type DeletePlaceProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<DeletePlaceMutation, DeletePlaceMutationVariables>
+> &
+  TChildProps;
+export function withDeletePlace<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    DeletePlaceMutation,
+    DeletePlaceMutationVariables,
+    DeletePlaceProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    DeletePlaceMutation,
+    DeletePlaceMutationVariables,
+    DeletePlaceProps<TChildProps>
+  >(DeletePlaceDocument, {
+    alias: "withDeletePlace",
     ...operationOptions
   });
 }

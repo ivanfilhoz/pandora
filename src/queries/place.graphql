@@ -1,0 +1,30 @@
+query listPlaces {
+  listPlaces {
+    items {
+      id
+      name
+      headcount
+      personPrice
+      leaderPrice
+      retailPrice
+    }
+  }
+}
+
+mutation createPlace($input: CreatePlaceInput!) {
+  createPlace(input: $input) {
+    id
+  }
+}
+
+mutation updatePlace($input: UpdatePlaceInput!) {
+  updatePlace(input: $input) {
+    id
+  }
+}
+
+mutation deletePlace($input: DeletePlaceInput!) {
+  deletePlace(input: $input) {
+    id
+  }
+}
