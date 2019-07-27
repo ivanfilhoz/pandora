@@ -1,20 +1,22 @@
 import * as React from 'react'
-import { ModalProps } from '../../util/modal'
 import { Place } from '../../generated/graphql'
-import { Modal, Form, Input } from 'antd'
+import { Modal, Form, Input, Row, Col } from 'antd'
+import { formatCurrency, numberify } from '../../util/format'
+import { CrudModal } from '../../util/crud'
+import { InnerForm } from '../atoms/InnerForm'
 
-interface IProps extends ModalProps {
-  place?: Place
+interface IProps extends CrudModal<Place> {
+  entity?: Place
 }
 
 export const PlaceForm: React.FunctionComponent<IProps> = ({
-  place,
+  entity,
   onOk,
   onCancel
 }) => {
   const [loading, setLoading] = React.useState(false)
   const [input, setInput] = React.useState<Partial<Place>>(
-    place || {
+    entity || {
       name: '',
       headcount: 10,
       personPrice: 10000,
@@ -33,7 +35,7 @@ export const PlaceForm: React.FunctionComponent<IProps> = ({
     setField<string>(target.name)(target.value)
 
   const handleNumber = ({ target }: React.ChangeEvent<HTMLInputElement>) =>
-    setField<number>(target.name)(+target.value)
+    setField<number>(target.name)(+numberify(target.value))
 
   const handleOk = async () => {
     setLoading(true)
@@ -46,70 +48,73 @@ export const PlaceForm: React.FunctionComponent<IProps> = ({
 
   return (
     <Modal
-      title={place ? 'Editar estabelecimento' : 'Novo estabelecimento'}
+      title={entity ? 'Editar estabelecimento' : 'Novo estabelecimento'}
       visible
       onOk={handleOk}
-      okText={place ? 'Salvar alterações' : 'Criar estabelecimento'}
+      okText={entity ? 'Salvar alterações' : 'Criar estabelecimento'}
       confirmLoading={loading}
       onCancel={onCancel}
       cancelText="Cancelar"
     >
-      <Form {...formItemLayout}>
+      <InnerForm onOk={handleOk}>
         <Form.Item label="Nome">
           <Input name="name" value={input.name || ''} onChange={handleInput} />
         </Form.Item>
         <Form.Item label="Efetivo diário">
-          <Input
-            type="number"
-            name="headcount"
-            value={input.headcount || 0}
-            onChange={handleNumber}
-            min={0}
-            step={1}
-          />
+          <Row gutter={10}>
+            <Col md={8}>
+              <Input
+                type="number"
+                name="headcount"
+                value={input.headcount || 0}
+                onChange={handleNumber}
+                min={0}
+                step={1}
+              />
+            </Col>
+            <Col md={8}>pessoas</Col>
+          </Row>
         </Form.Item>
-        <Form.Item label="Diária do segurança (R$)">
-          <Input
-            type="number"
-            name="personPrice"
-            value={input.personPrice || 0}
-            onChange={handleNumber}
-            min={0}
-            step={1}
-          />
+        <Form.Item label="Diária padrão">
+          <Row gutter={10}>
+            <Col md={8}>
+              <Input
+                name="personPrice"
+                value={formatCurrency(input.personPrice || 0)}
+                onChange={handleNumber}
+                min={0}
+                step={1}
+              />
+            </Col>
+          </Row>
         </Form.Item>
-        <Form.Item label="Diária do líder (R$)">
-          <Input
-            type="number"
-            name="leaderPrice"
-            value={input.leaderPrice || 0}
-            onChange={handleNumber}
-            min={0}
-            step={1}
-          />
+        <Form.Item label="Diária líder">
+          <Row gutter={10}>
+            <Col md={8}>
+              <Input
+                name="leaderPrice"
+                value={formatCurrency(input.leaderPrice || 0)}
+                onChange={handleNumber}
+                min={0}
+                step={1}
+              />
+            </Col>
+          </Row>
         </Form.Item>
-        <Form.Item label="Diária de revenda (R$)">
-          <Input
-            type="number"
-            name="retailPrice"
-            value={input.retailPrice || 0}
-            onChange={handleNumber}
-            min={0}
-            step={1}
-          />
+        <Form.Item label="Diária revenda">
+          <Row gutter={10}>
+            <Col md={8}>
+              <Input
+                name="retailPrice"
+                value={formatCurrency(input.retailPrice || 0)}
+                onChange={handleNumber}
+                min={0}
+                step={1}
+              />
+            </Col>
+          </Row>
         </Form.Item>
-      </Form>
+      </InnerForm>
     </Modal>
   )
-}
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 }
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 }
-  }
 }
