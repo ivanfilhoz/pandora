@@ -5,22 +5,22 @@ import { Sider } from '../atoms/Sider'
 import { Content } from '../atoms/Content'
 import { PersonList } from '../organisms/PersonList'
 import { Row, Button, Col } from 'antd'
-import Title from 'antd/lib/typography/Title'
 import Search from 'antd/lib/input/Search'
+import { RightCol } from '../atoms/RightCol'
 
-export const PeopleList: React.FunctionComponent = () => (
+export const PeopleHome: React.FunctionComponent = () => (
   <MainLayout header={<Header />} sider={<Sider path={['people', 'list']} />}>
     <Content>
       <Row style={{ marginBottom: 24 }}>
         <Col span={8}>
           <Search placeholder="Pesquisar por nome" />
         </Col>
-        <Col span={16} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <RightCol span={16}>
           <Button type="primary" style={{ marginRight: 12 }}>
             Novo item
           </Button>
           <Button>Exportar</Button>
-        </Col>
+        </RightCol>
       </Row>
       <PersonList />
     </Content>

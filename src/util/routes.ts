@@ -1,40 +1,60 @@
-import { PeopleAllocation } from '../components/pages/PeopleAllocation'
-import { PeopleList } from '../components/pages/PeopleList'
+import { PeopleHome } from '../components/pages/PeopleHome'
+import { PlacesHome } from '../components/pages/PlacesHome'
 
-export const routes: Group[] = [
+export const menu: Group[] = [
+  {
+    key: 'places',
+    label: 'Estabelecimentos',
+    icon: 'shop',
+    items: [
+      {
+        key: 'list',
+        label: 'Lista',
+        path: '/estabelecimentos'
+      }
+    ]
+  },
   {
     key: 'people',
     label: 'Pessoal',
     icon: 'user',
     items: [
       {
-        key: 'allocation',
-        label: 'Alocação',
-        path: '/pessoal/alocacao',
-        component: PeopleAllocation
-      },
-      {
         key: 'list',
-        label: 'Cadastro',
-        path: '/pessoal/cadastro',
-        component: PeopleList
+        label: 'Lista',
+        path: '/pessoal'
       }
     ]
   }
 ]
 
-export const home = '/pessoal/alocacao'
+export const routes: Route[] = [
+  {
+    path: '/estabelecimentos',
+    component: PlacesHome
+  },
+  {
+    path: '/pessoal',
+    component: PeopleHome
+  }
+]
+
+export const home = '/estabelecimentos'
 
 type Group = {
   key: string
   label: string
   icon: string
-  items: Route[]
+  items: Link[]
+}
+
+type Link = {
+  key: string
+  label: string
+  path: string
 }
 
 type Route = {
-  key: string
-  label: string
   path: string
   component: React.FunctionComponent
 }

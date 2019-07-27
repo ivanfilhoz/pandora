@@ -1,0 +1,15 @@
+overwrite: true
+schema:
+  ${API_URL}:
+    headers:
+      X-Api-Key: ${API_KEY}
+documents: src/**/*.graphql
+generates:
+  src/generated/graphql.tsx:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+  ./graphql.schema.json:
+    plugins:
+      - introspection

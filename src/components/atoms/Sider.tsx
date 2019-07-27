@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Layout, Menu, Icon } from 'antd'
-import { routes } from '../../util/routes'
+import { menu } from '../../util/routes'
 import { Link } from 'react-router-dom'
 const { SubMenu, Item } = Menu
 const { Sider: RawSider } = Layout
@@ -17,23 +17,32 @@ export const Sider: React.FunctionComponent<IProps> = ({ path }) => (
       selectedKeys={[path.join('-')]}
       style={{ height: '100%', borderRight: 0 }}
     >
-      {routes.map(group => (
-        <SubMenu
-          key={group.key}
-          title={
-            <span>
+      {menu.map(group =>
+        group.items.length === 1 ? (
+          <Item key={group.key + '-' + group.items[0].key}>
+            <Link to={group.items[0].path}>
               <Icon type={group.icon} />
               {group.label}
-            </span>
-          }
-        >
-          {group.items.map(item => (
-            <Item key={group.key + '-' + item.key}>
-              <Link to={item.path}>{item.label}</Link>
-            </Item>
-          ))}
-        </SubMenu>
-      ))}
+            </Link>
+          </Item>
+        ) : (
+          <SubMenu
+            key={group.key}
+            title={
+              <span>
+                <Icon type={group.icon} />
+                {group.label}
+              </span>
+            }
+          >
+            {group.items.map(item => (
+              <Item key={group.key + '-' + item.key}>
+                <Link to={item.path}>{item.label}</Link>
+              </Item>
+            ))}
+          </SubMenu>
+        )
+      )}
       <SubMenu
         key="settings"
         title={

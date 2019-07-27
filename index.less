@@ -1,8 +1,11 @@
 @import './node_modules/antd/dist/antd.less';
 
-#root,
-.ant-layout {
+#root {
   min-height: 100%;
+
+  & > .ant-layout {
+    min-height: 100vh;
+  }
 }
 
 #logo {
