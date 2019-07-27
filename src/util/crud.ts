@@ -1,6 +1,7 @@
 import { MutationFn } from 'react-apollo'
 import { toInput } from './transform'
 import { message, Modal } from 'antd'
+import { ModalProps } from './modal'
 
 type CrudHook<T> = {
   handleCreate: (mutation: MutationFn) => () => void
@@ -8,9 +9,8 @@ type CrudHook<T> = {
   handleDelete: (mutation: MutationFn, entity: T) => () => void
 }
 
-type ModalArgs = {
-  [key: string]: any
-  onOk: (...args: any[]) => any
+export interface CrudModal<T> extends ModalProps {
+  entity?: T
 }
 
 type Entity = {
@@ -20,10 +20,10 @@ type Entity = {
   name: string
 }
 
-interface IAttributes {
+interface IAttributes<T> {
   entityName: string
   entityArticle: string
-  editModal: (args: ModalArgs) => void
+  editModal: (args: Partial<CrudModal<T>>) => void
   refetch: string
 }
 
@@ -32,7 +32,7 @@ export const generateCRUD = <T extends Entity>({
   entityArticle: x,
   editModal,
   refetch
-}: IAttributes): CrudHook<T> => {
+}: IAttributes<T>): CrudHook<T> => {
   const handleCreate = (mutation: MutationFn) => () =>
     editModal({
       onOk: async (input: Partial<T>) => {
