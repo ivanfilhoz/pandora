@@ -1,0 +1,19 @@
+query listAllocations($place: ID!, $from: AWSDate!, $to: AWSDate!) {
+  listAllocations(place: $place, from: $from, to: $to) {
+    date
+    people {
+      id
+      name
+      department
+    }
+  }
+}
+
+mutation setAllocation($input: AllocationInput!) {
+  setAllocation(input: $input) {
+    place {
+      id
+    }
+    date
+  }
+}

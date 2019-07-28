@@ -17,8 +17,44 @@ export type Scalars = {
    * slashes (two consecutive forward slashes) in their path are also considered invalid.
    */
   AWSURL: any;
+  /** The `AWSDate` scalar type provided by AWS AppSync, represents a valid
+   * ***extended*** [ISO 8601
+   * Date](https://en.wikipedia.org/wiki/ISO_8601#Calendar_dates) string. In other
+   * words, this scalar type accepts date strings of the form `YYYY-MM-DD`.  The
+   * scalar can also accept "negative years" of the form `-YYYY` which correspond to
+   * years before `0000`. For example, "**-2017-05-01**" and "**-9999-01-01**" are
+   * both valid dates.  This scalar type can also accept an optional [time zone
+   * offset](https://en.wikipedia.org/wiki/ISO_8601#Time_zone_designators). For
+   * example, "**1970-01-01**", "**1970-01-01Z**", "**1970-01-01-07:00**" and
+   * "**1970-01-01+05:30**" are all valid dates. The time zone offset must either be
+   * `Z` (representing the UTC time zone) or be in the format `±hh:mm:ss`. The
+   * seconds field in the timezone offset will be considered valid even though it is
+   * not part of the ISO 8601 standard.
+   */
+  AWSDate: any;
 };
 
+/**  # Enter a custom type name below as well as the fields it contains.
+ * #### Fields can of the type String, Int, Float, Boolean, ID, and other custom types that you define.
+ * #### After defining your type, edit any resource details below such as adding a secondary index and press "Create".
+ */
+export type Allocation = {
+  __typename?: "Allocation";
+  place: Place;
+  date: Scalars["AWSDate"];
+  people: Array<Person>;
+};
+
+export type AllocationInput = {
+  place: Scalars["ID"];
+  date: Scalars["AWSDate"];
+  people: Array<Scalars["ID"]>;
+};
+
+/**  # Enter a custom type name below as well as the fields it contains.
+ * #### Fields can of the type String, Int, Float, Boolean, ID, and other custom types that you define.
+ * #### After defining your type, edit any resource details below such as adding a secondary index and press "Create".
+ */
 export type CreatePersonInput = {
   photo?: Maybe<Scalars["AWSURL"]>;
   name: Scalars["String"];
@@ -50,6 +86,7 @@ export type Mutation = {
   createPlace?: Maybe<Place>;
   updatePlace?: Maybe<Place>;
   deletePlace?: Maybe<Place>;
+  setAllocation?: Maybe<Allocation>;
 };
 
 export type MutationCreatePersonArgs = {
@@ -74,6 +111,10 @@ export type MutationUpdatePlaceArgs = {
 
 export type MutationDeletePlaceArgs = {
   input: DeletePlaceInput;
+};
+
+export type MutationSetAllocationArgs = {
+  input: AllocationInput;
 };
 
 export type Person = {
@@ -113,6 +154,7 @@ export type Query = {
   listPeople?: Maybe<PersonConnection>;
   getPlace?: Maybe<Place>;
   listPlaces?: Maybe<PlaceConnection>;
+  listAllocations?: Maybe<Array<Maybe<Allocation>>>;
 };
 
 export type QueryGetPersonArgs = {
@@ -133,6 +175,12 @@ export type QueryListPlacesArgs = {
   filter?: Maybe<TablePlaceFilterInput>;
   limit?: Maybe<Scalars["Int"]>;
   nextToken?: Maybe<Scalars["String"]>;
+};
+
+export type QueryListAllocationsArgs = {
+  place: Scalars["ID"];
+  from: Scalars["AWSDate"];
+  to: Scalars["AWSDate"];
 };
 
 export type Subscription = {
@@ -281,6 +329,41 @@ export type UpdatePlaceInput = {
   leaderPrice?: Maybe<Scalars["Int"]>;
   retailPrice?: Maybe<Scalars["Int"]>;
 };
+export type ListAllocationsQueryVariables = {
+  place: Scalars["ID"];
+  from: Scalars["AWSDate"];
+  to: Scalars["AWSDate"];
+};
+
+export type ListAllocationsQuery = { __typename?: "Query" } & {
+  listAllocations: Maybe<
+    Array<
+      Maybe<
+        { __typename?: "Allocation" } & Pick<Allocation, "date"> & {
+            people: Array<
+              { __typename?: "Person" } & Pick<
+                Person,
+                "id" | "name" | "department"
+              >
+            >;
+          }
+      >
+    >
+  >;
+};
+
+export type SetAllocationMutationVariables = {
+  input: AllocationInput;
+};
+
+export type SetAllocationMutation = { __typename?: "Mutation" } & {
+  setAllocation: Maybe<
+    { __typename?: "Allocation" } & Pick<Allocation, "date"> & {
+        place: { __typename?: "Place" } & Pick<Place, "id">;
+      }
+  >;
+};
+
 export type ListPeopleQueryVariables = {
   filter?: Maybe<TablePersonFilterInput>;
 };
@@ -394,6 +477,106 @@ export type DeletePlaceMutation = { __typename?: "Mutation" } & {
   deletePlace: Maybe<{ __typename?: "Place" } & Pick<Place, "id">>;
 };
 
+export const ListAllocationsDocument = gql`
+  query listAllocations($place: ID!, $from: AWSDate!, $to: AWSDate!) {
+    listAllocations(place: $place, from: $from, to: $to) {
+      date
+      people {
+        id
+        name
+        department
+      }
+    }
+  }
+`;
+export type ListAllocationsComponentProps = Omit<
+  ReactApollo.QueryProps<ListAllocationsQuery, ListAllocationsQueryVariables>,
+  "query"
+> &
+  ({ variables: ListAllocationsQueryVariables; skip?: false } | { skip: true });
+
+export const ListAllocationsComponent = (
+  props: ListAllocationsComponentProps
+) => (
+  <ReactApollo.Query<ListAllocationsQuery, ListAllocationsQueryVariables>
+    query={ListAllocationsDocument}
+    {...props}
+  />
+);
+
+export type ListAllocationsProps<TChildProps = {}> = Partial<
+  ReactApollo.DataProps<ListAllocationsQuery, ListAllocationsQueryVariables>
+> &
+  TChildProps;
+export function withListAllocations<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    ListAllocationsQuery,
+    ListAllocationsQueryVariables,
+    ListAllocationsProps<TChildProps>
+  >
+) {
+  return ReactApollo.withQuery<
+    TProps,
+    ListAllocationsQuery,
+    ListAllocationsQueryVariables,
+    ListAllocationsProps<TChildProps>
+  >(ListAllocationsDocument, {
+    alias: "withListAllocations",
+    ...operationOptions
+  });
+}
+export const SetAllocationDocument = gql`
+  mutation setAllocation($input: AllocationInput!) {
+    setAllocation(input: $input) {
+      place {
+        id
+      }
+      date
+    }
+  }
+`;
+export type SetAllocationMutationFn = ReactApollo.MutationFn<
+  SetAllocationMutation,
+  SetAllocationMutationVariables
+>;
+export type SetAllocationComponentProps = Omit<
+  ReactApollo.MutationProps<
+    SetAllocationMutation,
+    SetAllocationMutationVariables
+  >,
+  "mutation"
+>;
+
+export const SetAllocationComponent = (props: SetAllocationComponentProps) => (
+  <ReactApollo.Mutation<SetAllocationMutation, SetAllocationMutationVariables>
+    mutation={SetAllocationDocument}
+    {...props}
+  />
+);
+
+export type SetAllocationProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<SetAllocationMutation, SetAllocationMutationVariables>
+> &
+  TChildProps;
+export function withSetAllocation<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    SetAllocationMutation,
+    SetAllocationMutationVariables,
+    SetAllocationProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    SetAllocationMutation,
+    SetAllocationMutationVariables,
+    SetAllocationProps<TChildProps>
+  >(SetAllocationDocument, {
+    alias: "withSetAllocation",
+    ...operationOptions
+  });
+}
 export const ListPeopleDocument = gql`
   query listPeople($filter: TablePersonFilterInput) {
     listPeople(filter: $filter) {
