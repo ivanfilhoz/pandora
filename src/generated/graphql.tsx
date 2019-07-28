@@ -19,13 +19,6 @@ export type Scalars = {
   AWSURL: any;
 };
 
-export type Allocation = {
-  __typename?: "Allocation";
-  placeId: Scalars["ID"];
-  period: Scalars["String"];
-  people: Array<Maybe<Scalars["ID"]>>;
-};
-
 export type CreatePersonInput = {
   photo?: Maybe<Scalars["AWSURL"]>;
   name: Scalars["String"];
