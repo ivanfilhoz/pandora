@@ -11,10 +11,8 @@ interface MaskSkel {
 }
 
 const formatNumber = (decimals: number): Mask => value => {
-  console.log(value)
   const number = Number(value)
   const float = value ? number / Math.pow(10, decimals) : 0
-  console.log(float)
   return new Intl.NumberFormat('pt-BR', {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals
