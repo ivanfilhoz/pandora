@@ -12,8 +12,9 @@ export const ButtonBar: React.FunctionComponent<IProps> = ({ buttons }) => (
       margin: -6
     }}
   >
-    {buttons.map(button => (
+    {buttons.map((button, i) => (
       <div
+        key={i}
         style={{
           padding: 6
         }}
