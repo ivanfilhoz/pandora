@@ -13,7 +13,8 @@ interface IProps {
 
 export const AllocationsEditor: React.FunctionComponent<IProps> = ({
   allocations,
-  loading
+  loading,
+  onSave
 }) => {
   const [date, setDate] = React.useState<Moment>(moment())
 
@@ -23,6 +24,9 @@ export const AllocationsEditor: React.FunctionComponent<IProps> = ({
     )
     return allocation ? allocation.people : []
   }
+
+  const handleAllocator = (people: string[]) =>
+    onSave(date.format('YYYY-MM-DD'), people)
 
   return (
     <div
@@ -46,7 +50,11 @@ export const AllocationsEditor: React.FunctionComponent<IProps> = ({
         />
       </div>
       <div style={{ flex: '1 0 300px' }}>
-        <Allocator people={getPeople()} loading={loading} />
+        <Allocator
+          people={getPeople()}
+          loading={loading}
+          onChange={handleAllocator}
+        />
       </div>
     </div>
   )

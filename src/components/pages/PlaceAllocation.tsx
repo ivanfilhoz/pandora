@@ -46,8 +46,8 @@ export const PlaceAllocation: React.FunctionComponent<
   const save = async (mutation: MutationFn, date: string, people: string[]) => {
     try {
       await mutation({
-        variables: { place: id, date, people },
-        refetchQueries: ['listMutations']
+        variables: { input: { place: id, date, people } },
+        refetchQueries: ['listAllocations']
       })
       message.success('Alocação salva com sucesso!')
     } catch (err) {
