@@ -2,8 +2,6 @@ import * as React from 'react'
 import { Allocation } from '../../generated/graphql'
 import { Spin, Calendar, Icon } from 'antd'
 import { Moment } from 'moment'
-import map from 'ramda/es/map'
-import objOf from 'ramda/es/objOf'
 
 interface IProps {
   allocations: Allocation[]
@@ -18,13 +16,10 @@ export const AllocationsCalendar: React.FunctionComponent<IProps> = ({
   value,
   onChange
 }) => {
-  const data = (map(({ date }) => objOf(date), allocations) as any) as {
-    [key: string]: Allocation
-  }
-  const get = (date: Moment) => data[date.format('YYYY-MM-DD')]
-
   const AllocationIndicator = ({ date }: { date: Moment }) => {
-    const allocation = get(date)
+    const allocation = allocations.find(allocation =>
+      date.isSame(allocation.date, 'day')
+    )
     const headcount = allocation ? allocation.people.length : 0
 
     if (headcount === 10) {
