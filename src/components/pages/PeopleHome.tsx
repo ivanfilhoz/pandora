@@ -19,8 +19,13 @@ import { useModal } from '../../util/modal'
 import { PersonForm } from '../organisms/PersonForm'
 import { generateCRUD } from '../../util/crud'
 import { PeopleSkeleton } from '../organisms/PeopleSkeleton'
+import { searchBy } from '../../util/filter'
+import { ButtonBar } from '../atoms/ButtonBar'
 
 export const PeopleHome: React.FunctionComponent = () => {
+  const [search, setSearch] = React.useState('')
+  const searchByName = searchBy('name')(search)
+
   const [EditModal, showEditModal] = useModal(PersonForm)
   const { create, update, remove } = generateCRUD<Person>({
     entityName: 'Pessoa',
@@ -34,21 +39,21 @@ export const PeopleHome: React.FunctionComponent = () => {
       <Content>
         <Row style={{ marginBottom: 24 }}>
           <Col span={8}>
-            <Search placeholder="Pesquisar por nome" />
+            <Search placeholder="Pesquisar por nome" onSearch={setSearch} />
           </Col>
           <RightCol span={16}>
-            <CreatePersonComponent>
-              {createPerson => (
-                <Button
-                  type="primary"
-                  style={{ marginRight: 12 }}
-                  onClick={() => create(createPerson)}
-                >
-                  Cadastrar pessoa
-                </Button>
-              )}
-            </CreatePersonComponent>
-            <Button disabled>Exportar</Button>
+            <ButtonBar
+              buttons={[
+                <CreatePersonComponent>
+                  {createPerson => (
+                    <Button type="primary" onClick={() => create(createPerson)}>
+                      Cadastrar pessoa
+                    </Button>
+                  )}
+                </CreatePersonComponent>,
+                <Button disabled>Exportar</Button>
+              ]}
+            />
           </RightCol>
         </Row>
         <ListPeopleComponent>
@@ -63,7 +68,8 @@ export const PeopleHome: React.FunctionComponent = () => {
                   <DeletePersonComponent>
                     {deletePerson => (
                       <PeopleList
-                        people={data!.listPeople!.items! as Person[]}
+                        people={searchByName(data!.listPeople!
+                          .items as Person[])}
                         onEdit={person => update(updatePerson, person!)}
                         onDelete={person => remove(deletePerson, person!)}
                       />

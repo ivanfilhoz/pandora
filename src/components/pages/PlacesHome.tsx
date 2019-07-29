@@ -21,21 +21,14 @@ import { PlacesList } from '../organisms/PlacesList'
 import { RouteComponentProps } from 'react-router'
 import { route } from '../../util/routes'
 import { PlacesSkeleton } from '../organisms/PlacesSkeleton'
+import { searchBy } from '../../util/filter'
+import { ButtonBar } from '../atoms/ButtonBar'
 
 export const PlacesHome: React.FunctionComponent<RouteComponentProps> = ({
   history
 }) => {
-  const [filter, setFilter] = React.useState('')
-  const applyFilter = () =>
-    filter
-      ? {
-          filter: {
-            name: {
-              contains: filter
-            }
-          }
-        }
-      : undefined
+  const [search, setSearch] = React.useState('')
+  const searchByName = searchBy('name')(search)
 
   const [EditModal, showEditModal] = useModal(PlaceForm)
   const { create, update, remove } = generateCRUD<Place>({
@@ -45,6 +38,10 @@ export const PlacesHome: React.FunctionComponent<RouteComponentProps> = ({
     refetch: 'listPlaces'
   })
 
+  const open = (place: Place) => {
+    history.push(route('place-allocation', { id: place.id }))
+  }
+
   return (
     <MainLayout header={<Header />} sider={<Sider path={['places', 'list']} />}>
       <Content>
@@ -52,28 +49,25 @@ export const PlacesHome: React.FunctionComponent<RouteComponentProps> = ({
           <Col span={8}>
             <Input.Search
               placeholder="Pesquisar por nome"
-              onSearch={setFilter}
+              onSearch={setSearch}
             />
           </Col>
           <RightCol span={16}>
-            <CreatePlaceComponent>
-              {createPlace => (
-                <Button
-                  type="primary"
-                  style={{ marginRight: 12 }}
-                  onClick={() => create(createPlace)}
-                >
-                  Novo estabelecimento
-                </Button>
-              )}
-            </CreatePlaceComponent>
-            <Button disabled>Exportar</Button>
+            <ButtonBar
+              buttons={[
+                <CreatePlaceComponent>
+                  {createPlace => (
+                    <Button type="primary" onClick={() => create(createPlace)}>
+                      Novo estabelecimento
+                    </Button>
+                  )}
+                </CreatePlaceComponent>,
+                <Button disabled>Exportar</Button>
+              ]}
+            />
           </RightCol>
         </Row>
-        <ListPlacesComponent
-          variables={applyFilter()}
-          notifyOnNetworkStatusChange
-        >
+        <ListPlacesComponent>
           {({ loading, error, data }) =>
             loading ? (
               <PlacesSkeleton />
@@ -87,12 +81,9 @@ export const PlacesHome: React.FunctionComponent<RouteComponentProps> = ({
                   <DeletePlaceComponent>
                     {deletePlace => (
                       <PlacesList
-                        places={data!.listPlaces!.items! as Place[]}
-                        onOpen={place =>
-                          history.push(
-                            route('place-allocation', { id: place.id })
-                          )
-                        }
+                        places={searchByName(data!.listPlaces!
+                          .items as Place[])}
+                        onOpen={open}
                         onEdit={place => update(updatePlace, place!)}
                         onDelete={place => remove(deletePlace, place!)}
                       />
