@@ -68,21 +68,20 @@ export const PlacesHome: React.FunctionComponent<RouteComponentProps> = ({
           </RightCol>
         </Row>
         <ListPlacesComponent>
-          {({ loading, error, data }) =>
-            loading ? (
-              <PlacesSkeleton />
-            ) : error ? (
-              <ErrorAlert />
-            ) : !data!.listPlaces!.items!.length ? (
-              <EmptyAlert />
-            ) : (
+          {({ loading, error, data }) => {
+            if (loading) return <PlacesSkeleton />
+            if (error) return <ErrorAlert />
+
+            const places = searchByName(data!.listPlaces!.items as Place[])
+            if (!places.length) return <EmptyAlert />
+
+            return (
               <UpdatePlaceComponent>
                 {updatePlace => (
                   <DeletePlaceComponent>
                     {deletePlace => (
                       <PlacesList
-                        places={searchByName(data!.listPlaces!
-                          .items as Place[])}
+                        places={places}
                         onOpen={open}
                         onEdit={place => update(updatePlace, place!)}
                         onDelete={place => remove(deletePlace, place!)}
@@ -92,7 +91,7 @@ export const PlacesHome: React.FunctionComponent<RouteComponentProps> = ({
                 )}
               </UpdatePlaceComponent>
             )
-          }
+          }}
         </ListPlacesComponent>
       </Content>
       <EditModal />
