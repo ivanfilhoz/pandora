@@ -1,10 +1,8 @@
 import * as React from 'react'
-import { Alert } from 'antd'
+import { Empty } from 'antd'
 
 export const EmptyAlert: React.FunctionComponent = () => (
-  <Alert
-    type="info"
-    message="Nada por aqui!"
-    description="Nenhum item foi encontrado. Tente refazer a sua pesquisa ou cadastrar um novo item."
-  />
+  <div style={{ padding: 16 }}>
+    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+  </div>
 )
