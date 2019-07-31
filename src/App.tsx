@@ -12,6 +12,6 @@ export const App = () => (
         exact
       />
     ))}
-    <Route path="/" exact component={() => <Redirect to={home} />} />
+    <Route path="/" exact component={() => <Redirect to={home.path} />} />
   </Router>
 )
