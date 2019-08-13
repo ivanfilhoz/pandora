@@ -2,7 +2,7 @@ import * as localStorage from 'local-storage'
 import * as queryString from 'query-string'
 
 const { protocol, hostname, port } = window.location
-const root = `${protocol}//${hostname}${port !== '80' ? ':' + port : ''}/`
+const root = `${protocol}//${hostname}${port && ':' + port}/`
 
 const oauth = () => {
   window.location.assign(process.env.AUTH_URL + root)
