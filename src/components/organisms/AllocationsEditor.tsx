@@ -60,6 +60,7 @@ export const AllocationsEditor: React.FunctionComponent<IProps> = ({
       })
       proxy.writeQuery({
         query: ListAllocationsDocument,
+        variables,
         data: {
           listAllocations
         }
