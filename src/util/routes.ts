@@ -8,6 +8,7 @@ import keys from 'ramda/es/keys'
 import pipe from 'ramda/es/pipe'
 import prop from 'ramda/es/prop'
 import replace from 'ramda/es/replace'
+import { OAuth } from '../components/pages/OAuth'
 
 export const fillRoute = (obj: Params) => (path: string) =>
   reduce((prev, next) => replace(':' + next, obj[next], prev), path, keys(obj))
@@ -48,6 +49,11 @@ export const menu: Group[] = [
 
 export const routes: Route[] = [
   {
+    key: 'oauth',
+    path: '/oauth',
+    component: OAuth
+  },
+  {
     key: 'places',
     path: '/estabelecimentos',
     component: PlacesHome
@@ -64,7 +70,7 @@ export const routes: Route[] = [
   }
 ]
 
-export const home = routes[0]
+export const home = routes[1]
 
 type Group = {
   key: string
