@@ -34,10 +34,6 @@ export type Scalars = {
   AWSDate: any;
 };
 
-/**  # Enter a custom type name below as well as the fields it contains.
- * #### Fields can of the type String, Int, Float, Boolean, ID, and other custom types that you define.
- * #### After defining your type, edit any resource details below such as adding a secondary index and press "Create".
- */
 export type Allocation = {
   __typename?: "Allocation";
   place: Place;
@@ -52,8 +48,8 @@ export type AllocationInput = {
 };
 
 /**  # Enter a custom type name below as well as the fields it contains.
- * #### Fields can of the type String, Int, Float, Boolean, ID, and other custom types that you define.
- * #### After defining your type, edit any resource details below such as adding a secondary index and press "Create".
+ * ######### Fields can of the type String, Int, Float, Boolean, ID, and other custom types that you define.
+ * ######### After defining your type, edit any resource details below such as adding a secondary index and press "Create".
  */
 export type CreatePersonInput = {
   photo?: Maybe<Scalars["AWSURL"]>;
@@ -117,6 +113,19 @@ export type MutationSetAllocationArgs = {
   input: AllocationInput;
 };
 
+export type MyAllocation = {
+  __typename?: "MyAllocation";
+  date: Scalars["AWSDate"];
+  people: Array<Person>;
+};
+
+export type MyPlace = {
+  __typename?: "MyPlace";
+  id: Scalars["ID"];
+  name: Scalars["String"];
+  headcount: Scalars["Int"];
+};
+
 export type Person = {
   __typename?: "Person";
   id: Scalars["ID"];
@@ -150,11 +159,13 @@ export type PlaceConnection = {
 
 export type Query = {
   __typename?: "Query";
+  me?: Maybe<User>;
   getPerson?: Maybe<Person>;
   listPeople?: Maybe<PersonConnection>;
   getPlace?: Maybe<Place>;
   listPlaces?: Maybe<PlaceConnection>;
   listAllocations?: Maybe<Array<Maybe<Allocation>>>;
+  listMyAllocations?: Maybe<Array<Maybe<MyAllocation>>>;
 };
 
 export type QueryGetPersonArgs = {
@@ -179,6 +190,11 @@ export type QueryListPlacesArgs = {
 
 export type QueryListAllocationsArgs = {
   place: Scalars["ID"];
+  from: Scalars["AWSDate"];
+  to: Scalars["AWSDate"];
+};
+
+export type QueryListMyAllocationsArgs = {
   from: Scalars["AWSDate"];
   to: Scalars["AWSDate"];
 };
@@ -329,6 +345,19 @@ export type UpdatePlaceInput = {
   leaderPrice?: Maybe<Scalars["Int"]>;
   retailPrice?: Maybe<Scalars["Int"]>;
 };
+
+export type User = {
+  __typename?: "User";
+  username: Scalars["String"];
+  group: UserGroup;
+  place?: Maybe<MyPlace>;
+};
+
+export enum UserGroup {
+  Admins = "Admins",
+  Managers = "Managers",
+  Supervisors = "Supervisors"
+}
 export type ListAllocationsQueryVariables = {
   place: Scalars["ID"];
   from: Scalars["AWSDate"];
@@ -361,6 +390,28 @@ export type SetAllocationMutation = { __typename?: "Mutation" } & {
     { __typename?: "Allocation" } & Pick<Allocation, "date"> & {
         place: { __typename?: "Place" } & Pick<Place, "id">;
       }
+  >;
+};
+
+export type ListMyAllocationsQueryVariables = {
+  from: Scalars["AWSDate"];
+  to: Scalars["AWSDate"];
+};
+
+export type ListMyAllocationsQuery = { __typename?: "Query" } & {
+  listMyAllocations: Maybe<
+    Array<
+      Maybe<
+        { __typename?: "MyAllocation" } & Pick<MyAllocation, "date"> & {
+            people: Array<
+              { __typename?: "Person" } & Pick<
+                Person,
+                "id" | "name" | "department"
+              >
+            >;
+          }
+      >
+    >
   >;
 };
 
@@ -477,6 +528,18 @@ export type DeletePlaceMutation = { __typename?: "Mutation" } & {
   deletePlace: Maybe<{ __typename?: "Place" } & Pick<Place, "id">>;
 };
 
+export type MeQueryVariables = {};
+
+export type MeQuery = { __typename?: "Query" } & {
+  me: Maybe<
+    { __typename?: "User" } & Pick<User, "username" | "group"> & {
+        place: Maybe<
+          { __typename?: "MyPlace" } & Pick<MyPlace, "name" | "headcount">
+        >;
+      }
+  >;
+};
+
 export const ListAllocationsDocument = gql`
   query listAllocations($place: ID!, $from: AWSDate!, $to: AWSDate!) {
     listAllocations(place: $place, from: $from, to: $to) {
@@ -574,6 +637,60 @@ export function withSetAllocation<TProps, TChildProps = {}>(
     SetAllocationProps<TChildProps>
   >(SetAllocationDocument, {
     alias: "withSetAllocation",
+    ...operationOptions
+  });
+}
+export const ListMyAllocationsDocument = gql`
+  query listMyAllocations($from: AWSDate!, $to: AWSDate!) {
+    listMyAllocations(from: $from, to: $to) {
+      date
+      people {
+        id
+        name
+        department
+      }
+    }
+  }
+`;
+export type ListMyAllocationsComponentProps = Omit<
+  ReactApollo.QueryProps<
+    ListMyAllocationsQuery,
+    ListMyAllocationsQueryVariables
+  >,
+  "query"
+> &
+  (
+    | { variables: ListMyAllocationsQueryVariables; skip?: false }
+    | { skip: true });
+
+export const ListMyAllocationsComponent = (
+  props: ListMyAllocationsComponentProps
+) => (
+  <ReactApollo.Query<ListMyAllocationsQuery, ListMyAllocationsQueryVariables>
+    query={ListMyAllocationsDocument}
+    {...props}
+  />
+);
+
+export type ListMyAllocationsProps<TChildProps = {}> = Partial<
+  ReactApollo.DataProps<ListMyAllocationsQuery, ListMyAllocationsQueryVariables>
+> &
+  TChildProps;
+export function withListMyAllocations<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    ListMyAllocationsQuery,
+    ListMyAllocationsQueryVariables,
+    ListMyAllocationsProps<TChildProps>
+  >
+) {
+  return ReactApollo.withQuery<
+    TProps,
+    ListMyAllocationsQuery,
+    ListMyAllocationsQueryVariables,
+    ListMyAllocationsProps<TChildProps>
+  >(ListMyAllocationsDocument, {
+    alias: "withListMyAllocations",
     ...operationOptions
   });
 }
@@ -994,6 +1111,49 @@ export function withDeletePlace<TProps, TChildProps = {}>(
     DeletePlaceProps<TChildProps>
   >(DeletePlaceDocument, {
     alias: "withDeletePlace",
+    ...operationOptions
+  });
+}
+export const MeDocument = gql`
+  query me {
+    me {
+      username
+      group
+      place {
+        name
+        headcount
+      }
+    }
+  }
+`;
+export type MeComponentProps = Omit<
+  ReactApollo.QueryProps<MeQuery, MeQueryVariables>,
+  "query"
+>;
+
+export const MeComponent = (props: MeComponentProps) => (
+  <ReactApollo.Query<MeQuery, MeQueryVariables> query={MeDocument} {...props} />
+);
+
+export type MeProps<TChildProps = {}> = Partial<
+  ReactApollo.DataProps<MeQuery, MeQueryVariables>
+> &
+  TChildProps;
+export function withMe<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    MeQuery,
+    MeQueryVariables,
+    MeProps<TChildProps>
+  >
+) {
+  return ReactApollo.withQuery<
+    TProps,
+    MeQuery,
+    MeQueryVariables,
+    MeProps<TChildProps>
+  >(MeDocument, {
+    alias: "withMe",
     ...operationOptions
   });
 }

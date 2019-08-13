@@ -15,11 +15,12 @@ interface IProps {
   loading: boolean
   date: Moment
   onChange: (date: Moment) => void
-  onSave: (
+  onSave?: (
     date: string,
     people: string[],
     updateHandler: (variables: any) => MutationUpdaterFn
   ) => void
+  readOnly?: boolean
 }
 
 export const AllocationsEditor: React.FunctionComponent<IProps> = ({
@@ -27,7 +28,8 @@ export const AllocationsEditor: React.FunctionComponent<IProps> = ({
   date,
   onChange,
   loading,
-  onSave
+  onSave,
+  readOnly
 }) => {
   const allocation = allocations.find(allocation =>
     date.isSame(allocation.date, 'day')
@@ -36,7 +38,7 @@ export const AllocationsEditor: React.FunctionComponent<IProps> = ({
   const getPeople = () => (allocation ? allocation.people : [])
 
   const handleAllocator = (people: string[]) => {
-    onSave(date.format('YYYY-MM-DD'), people, variables => proxy => {
+    onSave!(date.format('YYYY-MM-DD'), people, variables => proxy => {
       const data = proxy.readQuery({
         query: ListAllocationsDocument,
         variables
@@ -94,6 +96,7 @@ export const AllocationsEditor: React.FunctionComponent<IProps> = ({
           people={getPeople()}
           loading={loading}
           onChange={handleAllocator}
+          readOnly={readOnly}
         />
       </div>
     </div>

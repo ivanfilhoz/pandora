@@ -8,7 +8,7 @@ import keys from 'ramda/es/keys'
 import pipe from 'ramda/es/pipe'
 import prop from 'ramda/es/prop'
 import replace from 'ramda/es/replace'
-import { OAuth } from '../components/pages/OAuth'
+import { GuestAllocation } from '../components/pages/GuestAllocation'
 
 export const fillRoute = (obj: Params) => (path: string) =>
   reduce((prev, next) => replace(':' + next, obj[next], prev), path, keys(obj))
@@ -20,39 +20,50 @@ export const route = (key: string, params: Params = {}) =>
     fillRoute(params)
   )(routes)
 
-export const menu: Group[] = [
-  {
-    key: 'places',
-    label: 'Estabelecimentos',
-    icon: 'shop',
-    items: [
-      {
-        key: 'list',
-        label: 'Lista',
-        path: '/estabelecimentos'
-      }
-    ]
-  },
-  {
-    key: 'people',
-    label: 'Pessoal',
-    icon: 'user',
-    items: [
-      {
-        key: 'list',
-        label: 'Lista',
-        path: '/pessoal'
-      }
-    ]
-  }
-]
+export const menu: Menu = {
+  admin: [
+    {
+      key: 'places',
+      label: 'Estabelecimentos',
+      icon: 'shop',
+      items: [
+        {
+          key: 'list',
+          label: 'Lista',
+          path: '/estabelecimentos'
+        }
+      ]
+    },
+    {
+      key: 'people',
+      label: 'Pessoal',
+      icon: 'user',
+      items: [
+        {
+          key: 'list',
+          label: 'Lista',
+          path: '/pessoal'
+        }
+      ]
+    }
+  ],
+  guest: [
+    {
+      key: 'allocation',
+      label: 'Alocação',
+      icon: 'calendar',
+      items: [
+        {
+          key: 'list',
+          label: 'Lista',
+          path: '/alocacao'
+        }
+      ]
+    }
+  ]
+}
 
 export const routes: Route[] = [
-  {
-    key: 'oauth',
-    path: '/oauth',
-    component: OAuth
-  },
   {
     key: 'places',
     path: '/estabelecimentos',
@@ -67,10 +78,26 @@ export const routes: Route[] = [
     key: 'people',
     path: '/pessoal',
     component: PeopleHome
+  },
+  {
+    key: 'guest-allocation',
+    path: '/alocacao',
+    component: GuestAllocation
   }
 ]
 
-export const home = routes[1]
+export const adminHome = routes[0]
+export const guestHome = routes[3]
+
+type Menu = {
+  admin: Group[]
+  guest: Group[]
+}
+
+type Router = {
+  admin: Route[]
+  guest: Route[]
+}
 
 type Group = {
   key: string

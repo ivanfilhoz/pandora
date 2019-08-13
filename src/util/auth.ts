@@ -2,21 +2,20 @@ import * as localStorage from 'local-storage'
 import * as queryString from 'query-string'
 
 const { protocol, hostname, port } = window.location
-const root = `${protocol}//${hostname}${port !== '80' ? ':' + port : ''}`
+const root = `${protocol}//${hostname}${port !== '80' ? ':' + port : ''}/`
 
-const oauth = (state: string = '/') => {
-  window.location.assign(process.env.AUTH_URL + root + '/oauth&state=' + state)
+const oauth = () => {
+  window.location.assign(process.env.AUTH_URL + root)
 }
 
 export const login = () => {
   if (window.location.hash) {
     const parsed = queryString.parse(window.location.hash)
-    localStorage.set('access_token', parsed.access_token)
-    if (parsed.state) localStorage.set('state', parsed.state)
+    localStorage.set('id_token', parsed.id_token)
     history.pushState('', document.title, window.location.pathname)
   }
 
-  const access = localStorage.get('access_token')
+  const access = localStorage.get('id_token')
 
   if (!access) {
     oauth()
@@ -25,9 +24,9 @@ export const login = () => {
   return access
 }
 
-export const logout = (state: string = '/') => {
+export const logout = () => {
   localStorage.remove('hash')
-  localStorage.remove('access_token')
+  localStorage.remove('id_token')
   localStorage.remove('expires')
-  oauth(state)
+  oauth()
 }

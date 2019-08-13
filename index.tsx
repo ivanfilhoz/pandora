@@ -7,6 +7,7 @@ import 'moment/locale/pt-br'
 locale('pt-BR')
 import ApolloClient from 'apollo-boost'
 import { ApolloProvider } from 'react-apollo'
+import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks'
 import { App } from './src/App'
 import { ServerError } from 'apollo-link-http-common'
 import { login, logout } from './src/util/auth'
@@ -33,7 +34,9 @@ const client = new ApolloClient({
 render(
   <LocaleProvider locale={antLocale}>
     <ApolloProvider client={client}>
-      <App />
+      <ApolloHooksProvider client={client}>
+        <App />
+      </ApolloHooksProvider>
     </ApolloProvider>
   </LocaleProvider>,
   document.getElementById('root')
