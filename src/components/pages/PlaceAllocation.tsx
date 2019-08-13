@@ -13,8 +13,9 @@ import {
   SetAllocationComponent
 } from '../../generated/graphql'
 import moment = require('moment')
+import { Moment } from 'moment'
 import { AllocationsEditor } from '../organisms/AllocationsEditor'
-import { MutationFn } from 'react-apollo'
+import { MutationFn, MutationUpdaterFn } from 'react-apollo'
 
 interface IParams {
   id: string
@@ -28,7 +29,13 @@ export const PlaceAllocation: React.FunctionComponent<
   },
   history
 }) => {
-  const today = moment()
+  const [date, setDate] = React.useState<Moment>(moment())
+  const it = date.clone()
+  const variables = {
+    place: id,
+    from: it.startOf('month').format('YYYY-MM-DD'),
+    to: it.endOf('month').format('YYYY-MM-DD')
+  }
 
   const handleBack = () => {
     history.push(route('places'))
@@ -43,11 +50,16 @@ export const PlaceAllocation: React.FunctionComponent<
     handleBack()
   }
 
-  const save = async (mutation: MutationFn, date: string, people: string[]) => {
+  const handleSave = (mutation: MutationFn) => async (
+    date: string,
+    people: string[],
+    updateHandler?: (variables: any) => MutationUpdaterFn
+  ) => {
     try {
       await mutation({
         variables: { input: { place: id, date, people } },
-        refetchQueries: ['listAllocations']
+        refetchQueries: ['listAllocations'],
+        update: updateHandler ? updateHandler(variables) : undefined
       })
       message.success('Alocação salva com sucesso!')
     } catch (err) {
@@ -74,13 +86,7 @@ export const PlaceAllocation: React.FunctionComponent<
                 />
                 <SetAllocationComponent>
                   {setAllocation => (
-                    <ListAllocationsComponent
-                      variables={{
-                        place: id,
-                        from: today.startOf('month').format('YYYY-MM-DD'),
-                        to: today.endOf('month').format('YYYY-MM-DD')
-                      }}
-                    >
+                    <ListAllocationsComponent variables={variables}>
                       {({
                         loading: allocationsLoading,
                         data: allocationsData
@@ -93,9 +99,9 @@ export const PlaceAllocation: React.FunctionComponent<
                               allocationsData!.listAllocations as Allocation[]
                             }
                             loading={allocationsLoading}
-                            onSave={(date: string, people: string[]) =>
-                              save(setAllocation, date, people)
-                            }
+                            date={date}
+                            onChange={setDate}
+                            onSave={handleSave(setAllocation)}
                           />
                         )
                       }

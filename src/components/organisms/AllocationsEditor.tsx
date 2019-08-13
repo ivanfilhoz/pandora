@@ -1,32 +1,71 @@
 import * as React from 'react'
-import { Allocation } from '../../generated/graphql'
+import {
+  Allocation,
+  ListAllocationsDocument,
+  Person
+} from '../../generated/graphql'
 import { AllocationsCalendar } from './AllocationsCalendar'
 import moment = require('moment')
 import { Moment } from 'moment'
 import { Allocator } from './Allocator'
+import { MutationUpdaterFn } from 'react-apollo'
 
 interface IProps {
   allocations: Allocation[]
   loading: boolean
-  onSave: (date: string, people: string[]) => void
+  date: Moment
+  onChange: (date: Moment) => void
+  onSave: (
+    date: string,
+    people: string[],
+    updateHandler: (variables: any) => MutationUpdaterFn
+  ) => void
 }
 
 export const AllocationsEditor: React.FunctionComponent<IProps> = ({
   allocations,
+  date,
+  onChange,
   loading,
   onSave
 }) => {
-  const [date, setDate] = React.useState<Moment>(moment())
+  const allocation = allocations.find(allocation =>
+    date.isSame(allocation.date, 'day')
+  )
 
-  const getPeople = () => {
-    const allocation = allocations.find(allocation =>
-      date.isSame(allocation.date, 'day')
-    )
-    return allocation ? allocation.people : []
+  const getPeople = () => (allocation ? allocation.people : [])
+
+  const handleAllocator = (people: string[]) => {
+    onSave(date.format('YYYY-MM-DD'), people, variables => proxy => {
+      const data = proxy.readQuery({
+        query: ListAllocationsDocument,
+        variables
+      }) as { listAllocations: Allocation[] }
+      const listAllocations = data.listAllocations.map(allocation => {
+        if (!date.isSame(allocation.date, 'day')) return allocation
+        const updated = {
+          ...allocation,
+          people: people.map(id => {
+            const person = allocation.people.find(person => person.id === id)
+            return {
+              __typename: 'Person',
+              id,
+              name: '',
+              department: '',
+              ...(person || {})
+            }
+          })
+        }
+        return updated
+      })
+      proxy.writeQuery({
+        query: ListAllocationsDocument,
+        data: {
+          listAllocations
+        }
+      })
+    })
   }
-
-  const handleAllocator = (people: string[]) =>
-    onSave(date.format('YYYY-MM-DD'), people)
 
   return (
     <div
@@ -46,7 +85,7 @@ export const AllocationsEditor: React.FunctionComponent<IProps> = ({
           allocations={allocations as Allocation[]}
           loading={loading}
           value={date}
-          onChange={setDate}
+          onChange={onChange}
         />
       </div>
       <div style={{ flex: '1 0 300px' }}>
