@@ -6,7 +6,6 @@ import pluck from 'ramda/es/pluck'
 import includes from 'ramda/es/includes'
 import reject from 'ramda/es/reject'
 import equals from 'ramda/es/equals'
-import { MutationUpdaterFn } from 'react-apollo'
 import { EmptyAlert } from '../molecules/EmptyAlert'
 
 interface IProps {
