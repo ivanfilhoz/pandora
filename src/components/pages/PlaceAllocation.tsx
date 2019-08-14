@@ -93,7 +93,7 @@ export const PlaceAllocation: React.FunctionComponent<
                   title={data!.getPlace!.name}
                   subTitle={'Mês de ' + date.format('MMMM')}
                   onBack={handleBack}
-                  style={{ padding: 0, marginBottom: 24 + 7 }} // Button offset
+                  style={{ padding: 0, marginBottom: 24 }} // add +7 for button offset
                   // extra={[<Button type="primary">Alocar segurança</Button>]}
                 />
                 <SetAllocationComponent>
