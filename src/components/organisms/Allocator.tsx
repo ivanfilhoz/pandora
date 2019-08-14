@@ -27,10 +27,13 @@ export const Allocator: React.FunctionComponent<IProps> = ({
   const isAvailable = (person: Person) => !includes(person.id)(allocated)
   const takeOff = (person: Person) => reject(equals(person.id), allocated)
 
-  const handleSelect = (id: string) => setPerson(id)
-  const handleAdd = () => {
-    onChange([...allocated, person!])
-    setPerson(undefined)
+  React.useEffect(() => {
+    if (person && allocated.includes(person)) setPerson(undefined)
+  }, [people])
+
+  const handleSelect = (id: string) => {
+    setPerson(id)
+    onChange([...allocated, id!])
   }
   const handleCrown = (person: Person) => () =>
     onChange([person.id, ...takeOff(person)])
@@ -39,14 +42,14 @@ export const Allocator: React.FunctionComponent<IProps> = ({
   return (
     <>
       {!readOnly && (
-        <div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <ListPeopleComponent>
             {({ loading: loadingPeople, error, data }) => (
               <Select
                 showSearch
-                placeholder="Selecione uma pessoa"
-                disabled={loading || loadingPeople}
+                placeholder="Selecione uma pessoa para alocar"
                 value={person}
+                loading={loading || loadingPeople || !!person}
                 onChange={handleSelect}
                 style={{ width: 300, marginBottom: 24, marginRight: 12 }}
               >
@@ -60,9 +63,6 @@ export const Allocator: React.FunctionComponent<IProps> = ({
               </Select>
             )}
           </ListPeopleComponent>
-          <Button type="primary" disabled={!person} onClick={handleAdd}>
-            Alocar
-          </Button>
         </div>
       )}
       {people.length ? (
