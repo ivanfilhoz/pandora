@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Card, Avatar, Select, Button, Icon, Tag } from 'antd'
+import { Card, Avatar, Select, Icon, Tag, Row, Col } from 'antd'
 import Meta from 'antd/lib/card/Meta'
 import { Person, ListPeopleComponent } from '../../generated/graphql'
 import pluck from 'ramda/es/pluck'
@@ -7,8 +7,11 @@ import includes from 'ramda/es/includes'
 import reject from 'ramda/es/reject'
 import equals from 'ramda/es/equals'
 import { EmptyAlert } from '../molecules/EmptyAlert'
+import { RightCol } from '../atoms/RightCol'
+import { ButtonBar } from '../atoms/ButtonBar'
 
 interface IProps {
+  headcount: number
   people: Person[]
   loading: boolean
   onChange: (people: string[]) => void
@@ -16,6 +19,7 @@ interface IProps {
 }
 
 export const Allocator: React.FunctionComponent<IProps> = ({
+  headcount,
   people,
   loading,
   onChange,
@@ -25,6 +29,7 @@ export const Allocator: React.FunctionComponent<IProps> = ({
   const allocated = pluck('id', people)
   const isAvailable = (person: Person) => !includes(person.id)(allocated)
   const takeOff = (person: Person) => reject(equals(person.id), allocated)
+  const full = people.length >= headcount
 
   React.useEffect(() => {
     if (person && allocated.includes(person)) setPerson(undefined)
@@ -40,30 +45,47 @@ export const Allocator: React.FunctionComponent<IProps> = ({
 
   return (
     <>
-      {!readOnly && (
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <ListPeopleComponent>
-            {({ loading: loadingPeople, error, data }) => (
-              <Select
-                showSearch
-                placeholder="Selecione uma pessoa para alocar"
-                value={person}
-                loading={loading || loadingPeople || !!person}
-                onChange={handleSelect}
-                style={{ width: 300, marginBottom: 24, marginRight: 12 }}
-              >
-                {!loadingPeople &&
-                  !error &&
-                  data!.listPeople!.items!.filter(isAvailable).map(person => (
-                    <Select.Option key={person!.id} value={person!.id}>
-                      {person!.name}
-                    </Select.Option>
-                  ))}
-              </Select>
-            )}
-          </ListPeopleComponent>
-        </div>
-      )}
+      <Row style={{ marginBottom: 24 }}>
+        <Col span={8} style={{ lineHeight: '32px' }}>
+          Alocadas {people.length} de {headcount} pessoas
+        </Col>
+        <RightCol span={16}>
+          {!readOnly && (
+            <ButtonBar
+              buttons={[
+                <ListPeopleComponent>
+                  {({ loading: loadingPeople, error, data }) => (
+                    <Select
+                      showSearch
+                      placeholder={
+                        full
+                          ? 'Alocação completa'
+                          : 'Selecione uma pessoa para alocar'
+                      }
+                      value={person}
+                      loading={loading || loadingPeople || !!person}
+                      disabled={full}
+                      onChange={handleSelect}
+                      style={{ width: 300 }}
+                    >
+                      {!loadingPeople &&
+                        !error &&
+                        data!
+                          .listPeople!.items!.filter(isAvailable)
+                          .map(person => (
+                            <Select.Option key={person!.id} value={person!.id}>
+                              {person!.name}
+                            </Select.Option>
+                          ))}
+                    </Select>
+                  )}
+                </ListPeopleComponent>
+              ]}
+            />
+          )}
+        </RightCol>
+      </Row>
+
       {people.length ? (
         <div
           style={{

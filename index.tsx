@@ -22,6 +22,7 @@ const client = new ApolloClient({
   onError: err => {
     const networkErr =
       err.networkError &&
+      (err.networkError as ServerError).response &&
       (err.networkError as ServerError).response.status === 401
     const graphqlErr =
       err.graphQLErrors && err.graphQLErrors[0].message.match(/Not Authorized/)

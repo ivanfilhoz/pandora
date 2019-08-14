@@ -93,7 +93,8 @@ export const PlaceAllocation: React.FunctionComponent<
                   title={data!.getPlace!.name}
                   subTitle={'Mês de ' + date.format('MMMM')}
                   onBack={handleBack}
-                  style={{ padding: 0, marginBottom: 24 }}
+                  style={{ padding: 0, marginBottom: 24 + 7 }} // Button offset
+                  // extra={[<Button type="primary">Alocar segurança</Button>]}
                 />
                 <SetAllocationComponent>
                   {setAllocation => (
@@ -106,6 +107,7 @@ export const PlaceAllocation: React.FunctionComponent<
                           <Skeleton />
                         ) : (
                           <AllocationsEditor
+                            headcount={data!.getPlace!.headcount}
                             allocations={
                               allocationsData!.listAllocations as Allocation[]
                             }

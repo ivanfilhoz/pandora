@@ -4,7 +4,11 @@ import { Header } from '../molecules/Header'
 import { Sider } from '../molecules/Sider'
 import { Content } from '../atoms/Content'
 import { Skeleton } from 'antd'
-import { Allocation, ListMyAllocationsComponent } from '../../generated/graphql'
+import {
+  Allocation,
+  ListMyAllocationsComponent,
+  MeComponent
+} from '../../generated/graphql'
 import moment = require('moment')
 import { Moment } from 'moment'
 import { AllocationsEditor } from '../organisms/AllocationsEditor'
@@ -23,21 +27,26 @@ export const GuestAllocation: React.FunctionComponent = () => {
       sider={<Sider path={['allocation', 'list']} />}
     >
       <Content>
-        <ListMyAllocationsComponent variables={variables}>
-          {({ loading, data }) =>
-            loading ? (
-              <Skeleton />
-            ) : (
-              <AllocationsEditor
-                allocations={data!.listMyAllocations as Allocation[]}
-                loading={loading}
-                date={date}
-                onChange={setDate}
-                readOnly
-              />
-            )
-          }
-        </ListMyAllocationsComponent>
+        <MeComponent>
+          {({ loading: meLoading, data: meData }) => (
+            <ListMyAllocationsComponent variables={variables}>
+              {({ loading, data }) =>
+                loading || meLoading ? (
+                  <Skeleton />
+                ) : (
+                  <AllocationsEditor
+                    headcount={meData!.me!.place!.headcount}
+                    allocations={data!.listMyAllocations as Allocation[]}
+                    loading={loading}
+                    date={date}
+                    onChange={setDate}
+                    readOnly
+                  />
+                )
+              }
+            </ListMyAllocationsComponent>
+          )}
+        </MeComponent>
       </Content>
     </MainLayout>
   )

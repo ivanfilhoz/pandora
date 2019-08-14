@@ -11,6 +11,7 @@ import { Allocator } from './Allocator'
 import { MutationUpdaterFn } from 'react-apollo'
 
 interface IProps {
+  headcount: number
   allocations: Allocation[]
   loading: boolean
   date: Moment
@@ -29,7 +30,8 @@ export const AllocationsEditor: React.FunctionComponent<IProps> = ({
   onChange,
   loading,
   onSave,
-  readOnly
+  readOnly,
+  headcount
 }) => {
   const allocation = allocations.find(allocation =>
     date.isSame(allocation.date, 'day')
@@ -75,24 +77,26 @@ export const AllocationsEditor: React.FunctionComponent<IProps> = ({
       style={{
         display: 'flex',
         flexWrap: 'wrap',
-        margin: '-12px'
+        margin: -12
       }}
     >
       <div
         style={{
           flex: '0 0 300px',
-          padding: '12px'
+          padding: 12
         }}
       >
         <AllocationsCalendar
+          headcount={headcount}
           allocations={allocations as Allocation[]}
           loading={loading}
           value={date}
           onChange={onChange}
         />
       </div>
-      <div style={{ flex: '1 0 300px' }}>
+      <div style={{ flex: '1 0 300px', padding: 12 }}>
         <Allocator
+          headcount={headcount}
           people={getPeople()}
           loading={loading}
           onChange={handleAllocator}
