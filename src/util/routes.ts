@@ -1,13 +1,13 @@
 import find from 'ramda/es/find'
 import propEq from 'ramda/es/propEq'
-import { PeopleHome } from '../components/pages/PeopleHome'
-import { PlacesHome } from '../components/pages/PlacesHome'
-import { PlaceAllocation } from '../components/pages/PlaceAllocation'
 import reduce from 'ramda/es/reduce'
 import keys from 'ramda/es/keys'
 import pipe from 'ramda/es/pipe'
 import prop from 'ramda/es/prop'
 import replace from 'ramda/es/replace'
+import { PeopleHome } from '../components/pages/PeopleHome'
+import { PlacesHome } from '../components/pages/PlacesHome'
+import { PlaceAllocation } from '../components/pages/PlaceAllocation'
 import { GuestAllocation } from '../components/pages/GuestAllocation'
 
 export const fillRoute = (obj: Params) => (path: string) =>

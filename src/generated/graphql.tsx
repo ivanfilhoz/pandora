@@ -48,8 +48,8 @@ export type AllocationInput = {
 };
 
 /**  # Enter a custom type name below as well as the fields it contains.
- * ######### Fields can of the type String, Int, Float, Boolean, ID, and other custom types that you define.
- * ######### After defining your type, edit any resource details below such as adding a secondary index and press "Create".
+ * ############ Fields can of the type String, Int, Float, Boolean, ID, and other custom types that you define.
+ * ############ After defining your type, edit any resource details below such as adding a secondary index and press "Create".
  */
 export type CreatePersonInput = {
   photo?: Maybe<Scalars["AWSURL"]>;
@@ -83,6 +83,8 @@ export type Mutation = {
   updatePlace?: Maybe<Place>;
   deletePlace?: Maybe<Place>;
   setAllocation?: Maybe<Allocation>;
+  createUser?: Maybe<UserOutput>;
+  deleteUser?: Maybe<Scalars["Boolean"]>;
 };
 
 export type MutationCreatePersonArgs = {
@@ -111,6 +113,14 @@ export type MutationDeletePlaceArgs = {
 
 export type MutationSetAllocationArgs = {
   input: AllocationInput;
+};
+
+export type MutationCreateUserArgs = {
+  input: UserInput;
+};
+
+export type MutationDeleteUserArgs = {
+  username: Scalars["String"];
 };
 
 export type MyAllocation = {
@@ -166,6 +176,7 @@ export type Query = {
   listPlaces?: Maybe<PlaceConnection>;
   listAllocations?: Maybe<Array<Maybe<Allocation>>>;
   listMyAllocations?: Maybe<Array<Maybe<MyAllocation>>>;
+  listUsers?: Maybe<Array<Maybe<User>>>;
 };
 
 export type QueryGetPersonArgs = {
@@ -197,6 +208,10 @@ export type QueryListAllocationsArgs = {
 export type QueryListMyAllocationsArgs = {
   from: Scalars["AWSDate"];
   to: Scalars["AWSDate"];
+};
+
+export type QueryListUsersArgs = {
+  place: Scalars["ID"];
 };
 
 export type Subscription = {
@@ -349,6 +364,7 @@ export type UpdatePlaceInput = {
 export type User = {
   __typename?: "User";
   username: Scalars["String"];
+  email: Scalars["String"];
   group: UserGroup;
   place?: Maybe<MyPlace>;
 };
@@ -358,6 +374,19 @@ export enum UserGroup {
   Managers = "Managers",
   Supervisors = "Supervisors"
 }
+
+export type UserInput = {
+  username: Scalars["ID"];
+  email: Scalars["String"];
+  place: Scalars["ID"];
+  group: UserGroup;
+};
+
+export type UserOutput = {
+  __typename?: "UserOutput";
+  user: User;
+  password: Scalars["String"];
+};
 export type ListAllocationsQueryVariables = {
   place: Scalars["ID"];
   from: Scalars["AWSDate"];
@@ -539,6 +568,39 @@ export type MeQuery = { __typename?: "Query" } & {
       }
   >;
 };
+
+export type ListUsersQueryVariables = {
+  place: Scalars["ID"];
+};
+
+export type ListUsersQuery = { __typename?: "Query" } & {
+  listUsers: Maybe<
+    Array<
+      Maybe<
+        { __typename?: "User" } & Pick<User, "username" | "email" | "group">
+      >
+    >
+  >;
+};
+
+export type CreateUserMutationVariables = {
+  input: UserInput;
+};
+
+export type CreateUserMutation = { __typename?: "Mutation" } & {
+  createUser: Maybe<
+    { __typename?: "UserOutput" } & Pick<UserOutput, "password">
+  >;
+};
+
+export type DeleteUserMutationVariables = {
+  username: Scalars["String"];
+};
+
+export type DeleteUserMutation = { __typename?: "Mutation" } & Pick<
+  Mutation,
+  "deleteUser"
+>;
 
 export const ListAllocationsDocument = gql`
   query listAllocations($place: ID!, $from: AWSDate!, $to: AWSDate!) {
@@ -1154,6 +1216,138 @@ export function withMe<TProps, TChildProps = {}>(
     MeProps<TChildProps>
   >(MeDocument, {
     alias: "withMe",
+    ...operationOptions
+  });
+}
+export const ListUsersDocument = gql`
+  query listUsers($place: ID!) {
+    listUsers(place: $place) {
+      username
+      email
+      group
+    }
+  }
+`;
+export type ListUsersComponentProps = Omit<
+  ReactApollo.QueryProps<ListUsersQuery, ListUsersQueryVariables>,
+  "query"
+> &
+  ({ variables: ListUsersQueryVariables; skip?: false } | { skip: true });
+
+export const ListUsersComponent = (props: ListUsersComponentProps) => (
+  <ReactApollo.Query<ListUsersQuery, ListUsersQueryVariables>
+    query={ListUsersDocument}
+    {...props}
+  />
+);
+
+export type ListUsersProps<TChildProps = {}> = Partial<
+  ReactApollo.DataProps<ListUsersQuery, ListUsersQueryVariables>
+> &
+  TChildProps;
+export function withListUsers<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    ListUsersQuery,
+    ListUsersQueryVariables,
+    ListUsersProps<TChildProps>
+  >
+) {
+  return ReactApollo.withQuery<
+    TProps,
+    ListUsersQuery,
+    ListUsersQueryVariables,
+    ListUsersProps<TChildProps>
+  >(ListUsersDocument, {
+    alias: "withListUsers",
+    ...operationOptions
+  });
+}
+export const CreateUserDocument = gql`
+  mutation createUser($input: UserInput!) {
+    createUser(input: $input) {
+      password
+    }
+  }
+`;
+export type CreateUserMutationFn = ReactApollo.MutationFn<
+  CreateUserMutation,
+  CreateUserMutationVariables
+>;
+export type CreateUserComponentProps = Omit<
+  ReactApollo.MutationProps<CreateUserMutation, CreateUserMutationVariables>,
+  "mutation"
+>;
+
+export const CreateUserComponent = (props: CreateUserComponentProps) => (
+  <ReactApollo.Mutation<CreateUserMutation, CreateUserMutationVariables>
+    mutation={CreateUserDocument}
+    {...props}
+  />
+);
+
+export type CreateUserProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<CreateUserMutation, CreateUserMutationVariables>
+> &
+  TChildProps;
+export function withCreateUser<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    CreateUserMutation,
+    CreateUserMutationVariables,
+    CreateUserProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    CreateUserMutation,
+    CreateUserMutationVariables,
+    CreateUserProps<TChildProps>
+  >(CreateUserDocument, {
+    alias: "withCreateUser",
+    ...operationOptions
+  });
+}
+export const DeleteUserDocument = gql`
+  mutation deleteUser($username: String!) {
+    deleteUser(username: $username)
+  }
+`;
+export type DeleteUserMutationFn = ReactApollo.MutationFn<
+  DeleteUserMutation,
+  DeleteUserMutationVariables
+>;
+export type DeleteUserComponentProps = Omit<
+  ReactApollo.MutationProps<DeleteUserMutation, DeleteUserMutationVariables>,
+  "mutation"
+>;
+
+export const DeleteUserComponent = (props: DeleteUserComponentProps) => (
+  <ReactApollo.Mutation<DeleteUserMutation, DeleteUserMutationVariables>
+    mutation={DeleteUserDocument}
+    {...props}
+  />
+);
+
+export type DeleteUserProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<DeleteUserMutation, DeleteUserMutationVariables>
+> &
+  TChildProps;
+export function withDeleteUser<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    DeleteUserMutation,
+    DeleteUserMutationVariables,
+    DeleteUserProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    DeleteUserMutation,
+    DeleteUserMutationVariables,
+    DeleteUserProps<TChildProps>
+  >(DeleteUserDocument, {
+    alias: "withDeleteUser",
     ...operationOptions
   });
 }

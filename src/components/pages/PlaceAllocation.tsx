@@ -3,19 +3,29 @@ import { MainLayout } from '../templates/MainLayout'
 import { Header } from '../molecules/Header'
 import { Sider } from '../molecules/Sider'
 import { Content } from '../atoms/Content'
-import { PageHeader, Skeleton, notification, message } from 'antd'
+import {
+  PageHeader,
+  Skeleton,
+  notification,
+  message,
+  Button,
+  Divider
+} from 'antd'
 import { RouteComponentProps } from 'react-router'
 import { route } from '../../util/routes'
 import {
   GetPlaceComponent,
   ListAllocationsComponent,
   Allocation,
-  SetAllocationComponent
+  SetAllocationComponent,
+  Place
 } from '../../generated/graphql'
 import moment = require('moment')
 import { Moment } from 'moment'
 import { AllocationsEditor } from '../organisms/AllocationsEditor'
 import { MutationFn, MutationUpdaterFn } from 'react-apollo'
+import { UsersEditor } from '../organisms/UsersEditor'
+import Title from 'antd/lib/typography/Title'
 
 interface IParams {
   id: string
@@ -81,6 +91,7 @@ export const PlaceAllocation: React.FunctionComponent<
               <>
                 <PageHeader
                   title={data!.getPlace!.name}
+                  subTitle={'Mês de ' + date.format('MMMM')}
                   onBack={handleBack}
                   style={{ padding: 0, marginBottom: 24 }}
                 />
@@ -108,6 +119,8 @@ export const PlaceAllocation: React.FunctionComponent<
                     </ListAllocationsComponent>
                   )}
                 </SetAllocationComponent>
+                <Divider />
+                <UsersEditor place={data!.getPlace as Place} />
               </>
             )
           }
