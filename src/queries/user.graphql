@@ -5,6 +5,7 @@ query me {
     place {
       name
       headcount
+      retailPrice
     }
   }
 }

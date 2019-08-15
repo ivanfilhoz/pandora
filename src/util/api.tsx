@@ -14,7 +14,8 @@ const client = new ApolloClient({
   onError: err => {
     if (
       err.graphQLErrors &&
-      (err.graphQLErrors[0] as any).errorType.match(/Unauthorized/)
+      (err.graphQLErrors[0] as any).errorType &
+        (err.graphQLErrors[0] as any).errorType.match(/Unauthorized/)
     )
       logout()
   }

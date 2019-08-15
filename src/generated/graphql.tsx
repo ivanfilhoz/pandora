@@ -48,8 +48,9 @@ export type AllocationInput = {
 };
 
 /**  # Enter a custom type name below as well as the fields it contains.
- * ############ Fields can of the type String, Int, Float, Boolean, ID, and other custom types that you define.
- * ############ After defining your type, edit any resource details below such as adding a secondary index and press "Create".
+ * ############## Fields can of the type String, Int, Float, Boolean, ID, and other custom types that you define.
+ * ############## After defining your type, edit any resource details below such as
+ * adding a secondary index and press "Create".
  */
 export type CreatePersonInput = {
   photo?: Maybe<Scalars["AWSURL"]>;
@@ -134,6 +135,7 @@ export type MyPlace = {
   id: Scalars["ID"];
   name: Scalars["String"];
   headcount: Scalars["Int"];
+  retailPrice: Scalars["Int"];
 };
 
 export type Person = {
@@ -563,7 +565,10 @@ export type MeQuery = { __typename?: "Query" } & {
   me: Maybe<
     { __typename?: "User" } & Pick<User, "username" | "group"> & {
         place: Maybe<
-          { __typename?: "MyPlace" } & Pick<MyPlace, "name" | "headcount">
+          { __typename?: "MyPlace" } & Pick<
+            MyPlace,
+            "name" | "headcount" | "retailPrice"
+          >
         >;
       }
   >;
@@ -1184,6 +1189,7 @@ export const MeDocument = gql`
       place {
         name
         headcount
+        retailPrice
       }
     }
   }

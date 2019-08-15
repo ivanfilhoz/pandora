@@ -9,6 +9,9 @@ import { PeopleHome } from '../components/pages/PeopleHome'
 import { PlacesHome } from '../components/pages/PlacesHome'
 import { PlaceAllocation } from '../components/pages/PlaceAllocation'
 import { GuestAllocation } from '../components/pages/GuestAllocation'
+import { Reports } from '../components/pages/Reports'
+import { UserGroup } from '../generated/graphql'
+import { GuestReports } from '../components/pages/GuestReports'
 
 export const fillRoute = (obj: Params) => (path: string) =>
   reduce((prev, next) => replace(':' + next, obj[next], prev), path, keys(obj))
@@ -21,7 +24,7 @@ export const route = (key: string, params: Params = {}) =>
   )(routes)
 
 export const menu: Menu = {
-  admin: [
+  [UserGroup.Admins]: [
     {
       key: 'places',
       label: 'Estabelecimentos',
@@ -45,9 +48,47 @@ export const menu: Menu = {
           path: '/pessoal'
         }
       ]
+    },
+    {
+      key: 'reports',
+      label: 'Relatórios',
+      icon: 'line-chart',
+      items: [
+        {
+          key: 'list',
+          label: 'Lista',
+          path: '/relatorios'
+        }
+      ]
     }
   ],
-  guest: [
+  [UserGroup.Managers]: [
+    {
+      key: 'allocation',
+      label: 'Alocação',
+      icon: 'calendar',
+      items: [
+        {
+          key: 'list',
+          label: 'Lista',
+          path: '/alocacao'
+        }
+      ]
+    },
+    {
+      key: 'reports',
+      label: 'Fatura',
+      icon: 'dollar',
+      items: [
+        {
+          key: 'list',
+          label: 'Lista',
+          path: '/fatura'
+        }
+      ]
+    }
+  ],
+  [UserGroup.Supervisors]: [
     {
       key: 'allocation',
       label: 'Alocação',
@@ -83,6 +124,16 @@ export const routes: Route[] = [
     key: 'guest-allocation',
     path: '/alocacao',
     component: GuestAllocation
+  },
+  {
+    key: 'reports',
+    path: '/relatorios',
+    component: Reports
+  },
+  {
+    key: 'guest-reports',
+    path: '/fatura',
+    component: GuestReports
   }
 ]
 
@@ -90,13 +141,7 @@ export const adminHome = routes[0]
 export const guestHome = routes[3]
 
 type Menu = {
-  admin: Group[]
-  guest: Group[]
-}
-
-type Router = {
-  admin: Route[]
-  guest: Route[]
+  [key: string]: Group[]
 }
 
 type Group = {

@@ -26,7 +26,8 @@ export const Sider: React.FunctionComponent<IProps> = ({ path }) => (
               <Spin />
             </div>
           )
-        const items = data!.me!.place ? menu.guest : menu.admin
+
+        const items = menu[data!.me!.group]
 
         return (
           <Menu
