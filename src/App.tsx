@@ -22,7 +22,7 @@ export const App = () => (
               exact
             />
           ))}
-          <Route path="/" component={() => <Redirect to={home.path} />} />
+          <Route path="/" exact component={() => <Redirect to={home.path} />} />
         </Router>
       )
     }}
