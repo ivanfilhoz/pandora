@@ -127,7 +127,7 @@ export const routes: Route[] = [
   },
   {
     key: 'reports',
-    path: '/relatorios',
+    path: '/relatorios/:place?',
     component: Reports
   },
   {

@@ -3,7 +3,7 @@ import { MainLayout } from '../templates/MainLayout'
 import { Header } from '../molecules/Header'
 import { Sider } from '../molecules/Sider'
 import { Content } from '../atoms/Content'
-import { Row, Col, Select, Skeleton } from 'antd'
+import { Row, Col, Select, Skeleton, Button, message } from 'antd'
 import { RightCol } from '../atoms/RightCol'
 import { MonthSelector } from '../molecules/MonthSelector'
 import moment = require('moment')
@@ -14,31 +14,55 @@ import {
   Place,
   ListAllocationsComponent,
   Allocation,
-  UserGroup
+  UserGroup,
+  GetPlaceComponent
 } from '../../generated/graphql'
 import { ButtonBar } from '../atoms/ButtonBar'
-import { EmptyAlert } from '../molecules/EmptyAlert'
 import { AllocationsReport } from '../organisms/AllocationsReport'
 import { ErrorAlert } from '../molecules/ErrorAlert'
+import { RouteComponentProps } from 'react-router'
+import { route } from '../../util/routes'
+import { tableToExcel } from '../../util/excel'
 
-export const Reports: React.FunctionComponent = () => {
+interface IParams {
+  place?: string
+}
+
+export const Reports: React.FunctionComponent<RouteComponentProps<IParams>> = ({
+  history,
+  match: {
+    params: { place }
+  }
+}) => {
   const periods: Moment[] = []
   const initial = moment('2014-12-01')
   while (initial.isSameOrBefore(moment(), 'month'))
     periods.push(initial.add(1, 'month').clone())
 
   const [period, setPeriod] = React.useState<Moment>(nth(-2, periods)!)
-  const [place, setPlace] = React.useState<Place | undefined>(undefined)
 
   const it = period.clone()
   const variables = {
-    place: place ? place.id : '',
+    place: place || '',
     from: it.format('YYYY-MM-DD'),
     to: it.endOf('month').format('YYYY-MM-DD')
   }
 
-  const handlePlace = (places: Place[]) => (id: string) =>
-    setPlace(places.find(_ => _.id === id))
+  const handlePlace = (place: string) =>
+    history.push(route('reports', { place }))
+
+  const ref = React.useRef<HTMLDivElement>(null)
+
+  const handleExport = () => {
+    const div = ref.current
+    const table = div && div.querySelector('table')
+    if (table)
+      tableToExcel(
+        table,
+        `${period.format('YYYY-MM')} - ${div!.dataset.place}.xlsx`
+      )
+    else message.error('Não há tabela para ser exportada.')
+  }
 
   return (
     <MainLayout
@@ -54,14 +78,13 @@ export const Reports: React.FunctionComponent = () => {
                   {({ loading, error, data }) => (
                     <Select
                       showSearch
-                      placeholder="Selecione um estabelecimento"
-                      value={place ? place.id : undefined}
+                      placeholder={
+                        loading ? 'Aguarde…' : 'Selecione um estabelecimento'
+                      }
+                      value={loading ? undefined : place}
                       loading={loading}
                       disabled={!!error}
-                      onChange={handlePlace(
-                        data!.listPlaces! &&
-                          (data!.listPlaces!.items! as Place[])
-                      )}
+                      onChange={handlePlace}
                       style={{ width: 250 }}
                     >
                       {!loading &&
@@ -82,26 +105,43 @@ export const Reports: React.FunctionComponent = () => {
               ]}
             />
           </Col>
-          <RightCol span={8} />
+          <RightCol span={8}>
+            {place && (
+              <Button icon="export" onClick={handleExport}>
+                Exportar para Excel
+              </Button>
+            )}
+          </RightCol>
         </Row>
-        {place ? (
-          <ListAllocationsComponent variables={variables}>
-            {({ loading, error, data }) =>
-              loading ? (
-                <Skeleton />
-              ) : error ? (
-                <ErrorAlert />
-              ) : (
-                <AllocationsReport
-                  group={UserGroup.Admins}
-                  place={place}
-                  allocations={data!.listAllocations! as Allocation[]}
-                />
-              )
-            }
-          </ListAllocationsComponent>
-        ) : (
-          <EmptyAlert />
+        {place && (
+          <GetPlaceComponent
+            variables={{
+              id: place
+            }}
+          >
+            {({
+              loading: loadingPlace,
+              error: errorPlace,
+              data: dataPlace
+            }) => (
+              <ListAllocationsComponent variables={variables}>
+                {({ loading, error, data }) =>
+                  loading || loadingPlace ? (
+                    <Skeleton />
+                  ) : error || errorPlace ? (
+                    <ErrorAlert />
+                  ) : (
+                    <AllocationsReport
+                      tableRef={ref}
+                      group={UserGroup.Admins}
+                      place={dataPlace!.getPlace! as Place}
+                      allocations={data!.listAllocations! as Allocation[]}
+                    />
+                  )
+                }
+              </ListAllocationsComponent>
+            )}
+          </GetPlaceComponent>
         )}
       </Content>
     </MainLayout>

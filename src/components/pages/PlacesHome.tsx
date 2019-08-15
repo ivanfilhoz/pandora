@@ -42,6 +42,10 @@ export const PlacesHome: React.FunctionComponent<RouteComponentProps> = ({
     history.push(route('place-allocation', { id: place.id }))
   }
 
+  const report = (place: Place) => {
+    history.push(route('reports', { place: place.id }))
+  }
+
   return (
     <MainLayout header={<Header />} sider={<Sider path={['places', 'list']} />}>
       <Content>
@@ -83,6 +87,7 @@ export const PlacesHome: React.FunctionComponent<RouteComponentProps> = ({
                       <PlacesList
                         places={places}
                         onOpen={open}
+                        onReport={report}
                         onEdit={place => update(updatePlace, place!)}
                         onDelete={place => remove(deletePlace, place!)}
                       />

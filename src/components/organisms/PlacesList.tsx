@@ -5,6 +5,7 @@ import { CardGrid } from '../atoms/CardGrid'
 
 interface IProps {
   places: Place[]
+  onReport: (place: Place) => void
   onOpen: (place: Place) => void
   onEdit: (place: Place) => void
   onDelete: (place: Place) => void
@@ -12,6 +13,7 @@ interface IProps {
 
 export const PlacesList: React.FunctionComponent<IProps> = ({
   places,
+  onReport,
   onOpen,
   onEdit,
   onDelete
@@ -19,10 +21,6 @@ export const PlacesList: React.FunctionComponent<IProps> = ({
   const unbubble = (callback: () => void) => (event: React.MouseEvent) => {
     event.stopPropagation()
     callback()
-  }
-
-  const onReport = () => {
-    message.info('O relatório ainda não está disponível!')
   }
 
   return (
@@ -37,7 +35,7 @@ export const PlacesList: React.FunctionComponent<IProps> = ({
             <Icon
               type="line-chart"
               title="Relatório"
-              onClick={unbubble(() => onReport())}
+              onClick={unbubble(() => onReport(place))}
             />,
             <Icon
               type="edit"

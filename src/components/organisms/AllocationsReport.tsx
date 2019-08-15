@@ -25,12 +25,14 @@ interface IProps {
   group: UserGroup
   place: Place | MyPlace
   allocations: Allocation[] | MyAllocation[]
+  tableRef?: React.RefObject<HTMLDivElement>
 }
 
 export const AllocationsReport: React.FunctionComponent<IProps> = ({
   group,
   place,
-  allocations
+  allocations,
+  tableRef
 }) => {
   if (!allocations.length) return <EmptyAlert />
   if (group === UserGroup.Supervisors) return <ErrorAlert />
@@ -138,12 +140,14 @@ export const AllocationsReport: React.FunctionComponent<IProps> = ({
           />
         )}
       </Row>
-      <Table
-        dataSource={dataSource}
-        columns={columns}
-        pagination={false}
-        size="small"
-      />
+      <div ref={tableRef} data-place={place.name}>
+        <Table
+          dataSource={dataSource}
+          columns={columns}
+          pagination={false}
+          size="small"
+        />
+      </div>
     </>
   )
 }
