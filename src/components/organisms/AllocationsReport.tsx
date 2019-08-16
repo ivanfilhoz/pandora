@@ -19,7 +19,6 @@ import sort from 'ramda/es/sort'
 import ascend from 'ramda/es/ascend'
 import last from 'ramda/es/last'
 import { ColumnProps } from 'antd/lib/table'
-import { ErrorAlert } from '../molecules/ErrorAlert'
 
 interface IProps {
   group: UserGroup
@@ -35,13 +34,12 @@ export const AllocationsReport: React.FunctionComponent<IProps> = ({
   tableRef
 }) => {
   if (!allocations.length) return <EmptyAlert />
-  if (group === UserGroup.Supervisors) return <ErrorAlert />
 
   const sample = allocations[0]
   const month = moment(sample.date)
   const days = daysOfMonth(month)
 
-  const columns = columnGroups[group]
+  const columns = columnGroups[group === UserGroup.Admins ? 'admin' : 'guest']
 
   const dataSource = days.map(date => {
     const allocation = (allocations as MyAllocation[]).find(_ =>
@@ -153,7 +151,7 @@ export const AllocationsReport: React.FunctionComponent<IProps> = ({
 }
 
 const columnGroups: { [key: string]: ColumnProps<any>[] } = {
-  [UserGroup.Admins as string]: [
+  admin: [
     {
       title: 'Dia',
       dataIndex: 'day',
@@ -195,7 +193,7 @@ const columnGroups: { [key: string]: ColumnProps<any>[] } = {
       key: 'profit'
     }
   ],
-  [UserGroup.Managers as string]: [
+  guest: [
     {
       title: 'Dia',
       dataIndex: 'day',

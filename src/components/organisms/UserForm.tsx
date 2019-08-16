@@ -77,6 +77,9 @@ export const UserForm: React.FunctionComponent<IProps> = ({
             <Select.Option value={UserGroup.Supervisors}>
               Supervisor
             </Select.Option>
+            <Select.Option value={UserGroup.Assistants}>
+              Assistente Administrativo
+            </Select.Option>
           </Select>
         </Form.Item>
       </InnerForm>

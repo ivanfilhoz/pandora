@@ -48,9 +48,9 @@ export type AllocationInput = {
 };
 
 /**  # Enter a custom type name below as well as the fields it contains.
- * ############## Fields can of the type String, Int, Float, Boolean, ID, and other custom types that you define.
- * ############## After defining your type, edit any resource details below such as
- * adding a secondary index and press "Create".
+ * ################ Fields can of the type String, Int, Float, Boolean, ID, and other custom types that you define.
+ * ################ After defining your type, edit any resource details below such
+ * as adding a secondary index and press "Create".
  */
 export type CreatePersonInput = {
   photo?: Maybe<Scalars["AWSURL"]>;
@@ -374,7 +374,8 @@ export type User = {
 export enum UserGroup {
   Admins = "Admins",
   Managers = "Managers",
-  Supervisors = "Supervisors"
+  Supervisors = "Supervisors",
+  Assistants = "Assistants"
 }
 
 export type UserInput = {

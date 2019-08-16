@@ -24,7 +24,7 @@ export const route = (key: string, params: Params = {}) =>
   )(routes)
 
 export const menu: Menu = {
-  [UserGroup.Admins]: [
+  admin: [
     {
       key: 'places',
       label: 'Estabelecimentos',
@@ -62,7 +62,7 @@ export const menu: Menu = {
       ]
     }
   ],
-  [UserGroup.Managers]: [
+  guest: [
     {
       key: 'allocation',
       label: 'Alocação',
@@ -84,20 +84,6 @@ export const menu: Menu = {
           key: 'list',
           label: 'Lista',
           path: '/fatura'
-        }
-      ]
-    }
-  ],
-  [UserGroup.Supervisors]: [
-    {
-      key: 'allocation',
-      label: 'Alocação',
-      icon: 'calendar',
-      items: [
-        {
-          key: 'list',
-          label: 'Lista',
-          path: '/alocacao'
         }
       ]
     }
@@ -141,7 +127,8 @@ export const adminHome = routes[0]
 export const guestHome = routes[3]
 
 type Menu = {
-  [key: string]: Group[]
+  admin: Group[],
+  guest: Group[]
 }
 
 type Group = {

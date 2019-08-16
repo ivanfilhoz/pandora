@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { List, Avatar, Tag, Icon, Button } from 'antd'
-import { User } from '../../generated/graphql'
+import { User, UserGroup } from '../../generated/graphql'
 const { Item } = List
 
 interface IProps {
@@ -33,11 +33,15 @@ export const UsersList: React.FunctionComponent<IProps> = ({
           description={user.email || ''}
         />
         <div>
-          <Tag color={'blue'}>
-            {user.group === 'Managers' ? 'Gerente' : 'Supervisor'}
-          </Tag>
+          <Tag color={'blue'}>{groups[user.group]}</Tag>
         </div>
       </Item>
     )}
   />
 )
+
+const groups: { [key: string]: string } = {
+  [UserGroup.Managers]: 'Gerente',
+  [UserGroup.Supervisors]: 'Supervisor',
+  [UserGroup.Assistants]: 'Assistente Administrativo'
+}

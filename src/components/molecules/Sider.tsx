@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Layout, Menu, Icon, Spin } from 'antd'
 import { menu } from '../../util/routes'
 import { Link } from 'react-router-dom'
-import { MeComponent } from '../../generated/graphql'
+import { MeComponent, UserGroup } from '../../generated/graphql'
 const { SubMenu, Item } = Menu
 const { Sider: RawSider } = Layout
 
@@ -27,7 +27,8 @@ export const Sider: React.FunctionComponent<IProps> = ({ path }) => (
             </div>
           )
 
-        const items = menu[data!.me!.group]
+        const items =
+          menu[data!.me!.group === UserGroup.Admins ? 'admin' : 'guest']
 
         return (
           <Menu
