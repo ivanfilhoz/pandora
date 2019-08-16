@@ -17,7 +17,7 @@ import {
 } from '../../generated/graphql'
 import { AllocationsReport } from '../organisms/AllocationsReport'
 import { ErrorAlert } from '../molecules/ErrorAlert'
-import { tableToExcel } from '../../util/excel';
+import { tableToExcel } from '../../util/excel'
 
 export const GuestReports: React.FunctionComponent = () => {
   const periods: Moment[] = []

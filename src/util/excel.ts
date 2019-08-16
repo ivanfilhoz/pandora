@@ -7,8 +7,6 @@ export const tableToExcel = (table: HTMLTableElement, filename: string) => {
 
   for (const name of workbook.SheetNames) {
     const sheet = workbook.Sheets[name]
-    console.log('ok')
-    console.log(sheet['!cols'])
     for (const cell in sheet) {
       const str: string = sheet[cell] && sheet[cell].v
       if (str && str.includes('$')) {
