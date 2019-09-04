@@ -1,14 +1,14 @@
-import * as React from 'react'
-import { Card, Avatar, Select, Icon, Tag, Row, Col } from 'antd'
+import { Avatar, Card, Col, Icon, Row, Select, Tag } from 'antd'
 import Meta from 'antd/lib/card/Meta'
-import { Person, ListPeopleComponent } from '../../generated/graphql'
-import pluck from 'ramda/es/pluck'
-import includes from 'ramda/es/includes'
-import reject from 'ramda/es/reject'
 import equals from 'ramda/es/equals'
-import { EmptyAlert } from '../molecules/EmptyAlert'
-import { RightCol } from '../atoms/RightCol'
+import includes from 'ramda/es/includes'
+import pluck from 'ramda/es/pluck'
+import reject from 'ramda/es/reject'
+import * as React from 'react'
+import { ListPeopleComponent, Person } from '../../generated/graphql'
 import { ButtonBar } from '../atoms/ButtonBar'
+import { RightCol } from '../atoms/RightCol'
+import { EmptyAlert } from '../molecules/EmptyAlert'
 
 interface IProps {
   headcount: number
@@ -64,10 +64,10 @@ export const Allocator: React.FunctionComponent<IProps> = ({
                       }
                       value={person}
                       loading={loading || loadingPeople || !!person}
+                      optionFilterProp="children"
                       disabled={full}
                       onChange={handleSelect}
-                      style={{ width: 300 }}
-                    >
+                      style={{ width: 300 }}>
                       {!loadingPeople &&
                         !error &&
                         data!
@@ -93,8 +93,7 @@ export const Allocator: React.FunctionComponent<IProps> = ({
             gridTemplateColumns: 'repeat(3, 1fr)',
             gridTemplateRows: 'min-content',
             gridGap: 12
-          }}
-        >
+          }}>
           {people.map((person, index) => (
             <Card
               key={person.name}
@@ -119,8 +118,7 @@ export const Allocator: React.FunctionComponent<IProps> = ({
                       />
                     ].filter(_ => _)
               }
-              style={{ position: 'relative' }}
-            >
+              style={{ position: 'relative' }}>
               <Meta
                 avatar={
                   <Avatar
@@ -139,8 +137,7 @@ export const Allocator: React.FunctionComponent<IProps> = ({
                           left: -20,
                           top: 0,
                           transform: 'rotate(-45deg)'
-                        }}
-                      >
+                        }}>
                         <Icon type="crown" style={{ marginRight: 5 }} />
                         Líder
                       </Tag>
