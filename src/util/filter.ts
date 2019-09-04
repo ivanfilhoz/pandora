@@ -1,8 +1,8 @@
+import compose from 'ramda/es/compose'
+import contains from 'ramda/es/contains'
 import filter from 'ramda/es/filter'
 import propSatisfies from 'ramda/es/propSatisfies'
-import contains from 'ramda/es/contains'
 import toLower from 'ramda/es/toLower'
-import compose from 'ramda/es/compose'
 
 const lowerContains = (value: string) =>
   compose(
@@ -11,4 +11,4 @@ const lowerContains = (value: string) =>
   )
 
 export const searchBy = <T>(prop: string) => (value: string) =>
-  filter<T>(propSatisfies<string, T>(lowerContains(value), prop))
+  filter<T>(propSatisfies<string, T>(lowerContains(toLower(value)), prop))
