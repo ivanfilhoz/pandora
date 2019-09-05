@@ -10,6 +10,11 @@ generates:
       - typescript
       - typescript-operations
       - typescript-react-apollo
+    config:
+      withHooks: true
+      withHOC: false
+      withComponents: true
+      hooksImportFrom: '@apollo/react-hooks'
   ./graphql.schema.json:
     plugins:
       - introspection

@@ -53,7 +53,7 @@ export const PeopleList: React.FunctionComponent<IProps> = ({
             description={person.department || ''}
           />
           <div>
-            <Tag color={'green'}>{'Regular'}</Tag>
+            <Tag color="green">Regular</Tag>
           </div>
         </Item>
       )}
