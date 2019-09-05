@@ -1,7 +1,8 @@
+import { Calendar, Icon, Spin } from 'antd'
+import { IconProps } from 'antd/lib/icon'
+import { Moment } from 'moment'
 import * as React from 'react'
 import { Allocation } from '../../generated/graphql'
-import { Spin, Calendar, Icon } from 'antd'
-import { Moment } from 'moment'
 
 interface IProps {
   headcount: number
@@ -23,16 +24,23 @@ export const AllocationsCalendar: React.FunctionComponent<IProps> = ({
       date.isSame(allocation.date, 'day')
     )
     const count = allocation ? allocation.people.length : 0
+    const props: IconProps =
+      count === headcount
+        ? {
+            type: 'check-circle',
+            twoToneColor: 'green'
+          }
+        : count > headcount / 2
+        ? {
+            type: 'minus-circle',
+            twoToneColor: 'yellow'
+          }
+        : {
+            type: 'exclamation-circle',
+            twoToneColor: 'red'
+          }
 
-    if (count === headcount) {
-      return <Icon type="check-circle" theme="twoTone" twoToneColor="green" />
-    } else if (count < Math.floor(headcount / 2)) {
-      return (
-        <Icon type="exclamation-circle" theme="twoTone" twoToneColor="red" />
-      )
-    } else {
-      return <Icon type="minus-circle" theme="twoTone" twoToneColor="yellow" />
-    }
+    return <Icon {...props} theme="twoTone" title={count + ' alocações'} />
   }
 
   return (
