@@ -1,6 +1,5 @@
 import { Avatar, Card, Col, Icon, Row, Select, Tag } from 'antd'
 import Meta from 'antd/lib/card/Meta'
-import Text from 'antd/lib/typography/Text'
 import equals from 'ramda/es/equals'
 import includes from 'ramda/es/includes'
 import pluck from 'ramda/es/pluck'
@@ -75,11 +74,12 @@ export const Allocator: React.FunctionComponent<IProps> = ({
                           .listPeople!.items!.filter(isAvailable)
                           .map(person => (
                             <Select.Option key={person!.id} value={person!.id}>
-                              <Text>{person!.name}</Text>
+                              {person!.name}
+                              {/* <Text>{person!.name}</Text>
                               <Text type="secondary">
                                 {' '}
                                 / {person!.department}
-                              </Text>
+                              </Text> */}
                             </Select.Option>
                           ))}
                     </Select>
