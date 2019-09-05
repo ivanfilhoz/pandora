@@ -1,5 +1,5 @@
+import { Avatar, Button, List, Tag } from 'antd'
 import * as React from 'react'
-import { List, Avatar, Tag, Icon, Button } from 'antd'
 import { Person } from '../../generated/graphql'
 const { Item } = List
 
@@ -18,6 +18,9 @@ export const PeopleList: React.FunctionComponent<IProps> = ({
     className="demo-loadmore-list"
     itemLayout="horizontal"
     dataSource={people}
+    pagination={{
+      position: 'bottom'
+    }}
     renderItem={person => (
       <Item
         actions={[
@@ -33,8 +36,7 @@ export const PeopleList: React.FunctionComponent<IProps> = ({
             title="Excluir"
             onClick={() => onDelete(person)}
           />
-        ]}
-      >
+        ]}>
         <Item.Meta
           avatar={
             <Avatar
