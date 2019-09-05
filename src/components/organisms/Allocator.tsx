@@ -1,11 +1,13 @@
 import { Avatar, Card, Col, Icon, Row, Select, Tag } from 'antd'
 import Meta from 'antd/lib/card/Meta'
+import Text from 'antd/lib/typography/Text'
 import equals from 'ramda/es/equals'
 import includes from 'ramda/es/includes'
 import pluck from 'ramda/es/pluck'
 import reject from 'ramda/es/reject'
 import * as React from 'react'
 import { ListPeopleComponent, Person } from '../../generated/graphql'
+import { lowerContains } from '../../util/filter'
 import { ButtonBar } from '../atoms/ButtonBar'
 import { RightCol } from '../atoms/RightCol'
 import { EmptyAlert } from '../molecules/EmptyAlert'
@@ -43,6 +45,14 @@ export const Allocator: React.FunctionComponent<IProps> = ({
     onChange([person.id, ...takeOff(person)])
   const handleDisallocate = (person: Person) => () => onChange(takeOff(person))
 
+  const handleFilter = (inputValue: string, option: React.ReactElement) => {
+    const parts = option.props.children as React.Component[]
+    const name = parts[0]!.props.children as string
+    const department = parts[1]!.props.children as string[]
+    const text = [name, ...department].join('')
+    return lowerContains(inputValue)(text)
+  }
+
   return (
     <>
       <Row style={{ marginBottom: 24 }}>
@@ -65,6 +75,7 @@ export const Allocator: React.FunctionComponent<IProps> = ({
                       value={person}
                       loading={loading || loadingPeople || !!person}
                       optionFilterProp="children"
+                      filterOption={handleFilter}
                       disabled={full}
                       onChange={handleSelect}
                       style={{ width: 300 }}>
@@ -74,12 +85,12 @@ export const Allocator: React.FunctionComponent<IProps> = ({
                           .listPeople!.items!.filter(isAvailable)
                           .map(person => (
                             <Select.Option key={person!.id} value={person!.id}>
-                              {person!.name}
-                              {/* <Text>{person!.name}</Text>
+                              {/* {person!.name} */}
+                              <Text>{person!.name}</Text>
                               <Text type="secondary">
                                 {' '}
                                 / {person!.department}
-                              </Text> */}
+                              </Text>
                             </Select.Option>
                           ))}
                     </Select>

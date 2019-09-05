@@ -1,30 +1,30 @@
+import { Button, Col, Row } from 'antd'
+import Search from 'antd/lib/input/Search'
 import * as React from 'react'
 import {
+  CreatePersonComponent,
+  DeletePersonComponent,
   ListPeopleComponent,
   Person,
-  CreatePersonComponent,
-  UpdatePersonComponent,
-  DeletePersonComponent
+  UpdatePersonComponent
 } from '../../generated/graphql'
-import { MainLayout } from '../templates/MainLayout'
-import { Header } from '../molecules/Header'
-import { Sider } from '../molecules/Sider'
+import { generateCRUD } from '../../util/crud'
+import { searchBy } from '../../util/filter'
+import { useModal } from '../../util/modal'
+import { ButtonBar } from '../atoms/ButtonBar'
 import { Content } from '../atoms/Content'
-import { PeopleList } from '../organisms/PeopleList'
-import { Row, Button, Col } from 'antd'
-import Search from 'antd/lib/input/Search'
 import { RightCol } from '../atoms/RightCol'
 import { ErrorAlert } from '../molecules/ErrorAlert'
-import { useModal } from '../../util/modal'
-import { PersonForm } from '../organisms/PersonForm'
-import { generateCRUD } from '../../util/crud'
+import { Header } from '../molecules/Header'
+import { Sider } from '../molecules/Sider'
+import { PeopleList } from '../organisms/PeopleList'
 import { PeopleSkeleton } from '../organisms/PeopleSkeleton'
-import { searchBy } from '../../util/filter'
-import { ButtonBar } from '../atoms/ButtonBar'
+import { PersonForm } from '../organisms/PersonForm'
+import { MainLayout } from '../templates/MainLayout'
 
 export const PeopleHome: React.FunctionComponent = () => {
   const [search, setSearch] = React.useState('')
-  const searchByName = searchBy('name')(search)
+  const searchFilter = searchBy<Person>('name', 'department')(search)
 
   const [EditModal, showEditModal] = useModal(PersonForm)
   const { create, update, remove } = generateCRUD<Person>({
@@ -34,12 +34,18 @@ export const PeopleHome: React.FunctionComponent = () => {
     refetch: 'listPeople'
   })
 
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setSearch(event.target.value)
+
   return (
     <MainLayout header={<Header />} sider={<Sider path={['people', 'list']} />}>
       <Content>
         <Row style={{ marginBottom: 24 }}>
           <Col span={8}>
-            <Search placeholder="Pesquisar por nome" onSearch={setSearch} />
+            <Search
+              placeholder="Pesquisar por nome, batalhão e/ou companhia"
+              onChange={handleSearch}
+            />
           </Col>
           <RightCol span={16}>
             <ButtonBar
@@ -68,7 +74,7 @@ export const PeopleHome: React.FunctionComponent = () => {
                   <DeletePersonComponent>
                     {deletePerson => (
                       <PeopleList
-                        people={searchByName(data!.listPeople!
+                        people={searchFilter(data!.listPeople!
                           .items as Person[])}
                         onEdit={person => update(updatePerson, person!)}
                         onDelete={person => remove(deletePerson, person!)}

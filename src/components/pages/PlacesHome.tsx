@@ -1,34 +1,34 @@
+import { Button, Col, Input, Row } from 'antd'
 import * as React from 'react'
+import { RouteComponentProps } from 'react-router'
 import {
-  ListPlacesComponent,
-  DeletePlaceComponent,
-  UpdatePlaceComponent,
   CreatePlaceComponent,
-  Place
+  DeletePlaceComponent,
+  ListPlacesComponent,
+  Place,
+  UpdatePlaceComponent
 } from '../../generated/graphql'
-import { MainLayout } from '../templates/MainLayout'
+import { generateCRUD } from '../../util/crud'
+import { searchBy } from '../../util/filter'
+import { useModal } from '../../util/modal'
+import { route } from '../../util/routes'
+import { ButtonBar } from '../atoms/ButtonBar'
+import { Content } from '../atoms/Content'
+import { RightCol } from '../atoms/RightCol'
+import { EmptyAlert } from '../molecules/EmptyAlert'
+import { ErrorAlert } from '../molecules/ErrorAlert'
 import { Header } from '../molecules/Header'
 import { Sider } from '../molecules/Sider'
-import { Content } from '../atoms/Content'
-import { Row, Col, Button, Input } from 'antd'
-import { ErrorAlert } from '../molecules/ErrorAlert'
-import { RightCol } from '../atoms/RightCol'
-import { useModal } from '../../util/modal'
 import { PlaceForm } from '../organisms/PlaceForm'
-import { generateCRUD } from '../../util/crud'
-import { EmptyAlert } from '../molecules/EmptyAlert'
 import { PlacesList } from '../organisms/PlacesList'
-import { RouteComponentProps } from 'react-router'
-import { route } from '../../util/routes'
 import { PlacesSkeleton } from '../organisms/PlacesSkeleton'
-import { searchBy } from '../../util/filter'
-import { ButtonBar } from '../atoms/ButtonBar'
+import { MainLayout } from '../templates/MainLayout'
 
 export const PlacesHome: React.FunctionComponent<RouteComponentProps> = ({
   history
 }) => {
   const [search, setSearch] = React.useState('')
-  const searchByName = searchBy('name')(search)
+  const searchByName = searchBy<Place>('name')(search)
 
   const [EditModal, showEditModal] = useModal(PlaceForm)
   const { create, update, remove } = generateCRUD<Place>({
@@ -46,6 +46,9 @@ export const PlacesHome: React.FunctionComponent<RouteComponentProps> = ({
     history.push(route('reports', { place: place.id }))
   }
 
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setSearch(event.target.value)
+
   return (
     <MainLayout header={<Header />} sider={<Sider path={['places', 'list']} />}>
       <Content>
@@ -53,7 +56,7 @@ export const PlacesHome: React.FunctionComponent<RouteComponentProps> = ({
           <Col span={8}>
             <Input.Search
               placeholder="Pesquisar por nome"
-              onSearch={setSearch}
+              onChange={handleSearch}
             />
           </Col>
           <RightCol span={16}>
