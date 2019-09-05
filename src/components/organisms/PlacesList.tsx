@@ -1,5 +1,8 @@
+import { Avatar, Card, Icon } from 'antd'
+import ascend from 'ramda/es/ascend'
+import prop from 'ramda/es/prop'
+import sort from 'ramda/es/sort'
 import * as React from 'react'
-import { Avatar, Icon, Card, message } from 'antd'
 import { Place } from '../../generated/graphql'
 import { CardGrid } from '../atoms/CardGrid'
 
@@ -18,6 +21,8 @@ export const PlacesList: React.FunctionComponent<IProps> = ({
   onEdit,
   onDelete
 }) => {
+  const sortedPlaces = sort(ascend(prop('name')), places)
+
   const unbubble = (callback: () => void) => (event: React.MouseEvent) => {
     event.stopPropagation()
     callback()
@@ -25,7 +30,7 @@ export const PlacesList: React.FunctionComponent<IProps> = ({
 
   return (
     <CardGrid>
-      {places.map(place => (
+      {sortedPlaces.map(place => (
         <Card
           key={place!.id}
           hoverable
@@ -47,8 +52,7 @@ export const PlacesList: React.FunctionComponent<IProps> = ({
               title="Excluir"
               onClick={unbubble(() => onDelete(place))}
             />
-          ]}
-        >
+          ]}>
           <Card.Meta
             avatar={<Avatar alt="Sem foto" icon="shop" />}
             title={place!.name}
