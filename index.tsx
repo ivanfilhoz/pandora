@@ -7,7 +7,7 @@ import { render } from 'react-dom'
 import { App } from './src/App'
 import { APIProvider } from './src/util/api'
 locale('pt-br', {
-  weekdaysMin: 'Dom Seg Ter Qua Qui Sex Sab'.split(' ')
+  weekdaysMin: 'Dom Seg Ter Qua Qui Sex Sáb'.split(' ')
 })
 
 render(
