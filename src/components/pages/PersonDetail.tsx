@@ -95,7 +95,7 @@ export const PersonDetail: React.FunctionComponent<
   }
 
   return (
-    <MainLayout header={<Header />} sider={<Sider path={['places', 'list']} />}>
+    <MainLayout header={<Header />} sider={<Sider path={['people', 'list']} />}>
       <Content>
         {loading ? (
           <Skeleton />
