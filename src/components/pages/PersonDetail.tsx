@@ -1,4 +1,12 @@
-import { Col, notification, PageHeader, Row, Skeleton } from 'antd'
+import {
+  Button,
+  Col,
+  message,
+  notification,
+  PageHeader,
+  Row,
+  Skeleton
+} from 'antd'
 import { Moment } from 'moment'
 import nth from 'ramda/es/nth'
 import * as React from 'react'
@@ -9,8 +17,10 @@ import {
   useGetPersonQuery,
   useListPersonAllocationsQuery
 } from '../../generated/graphql'
+import { tableToExcel } from '../../util/excel'
 import { route } from '../../util/routes'
 import { Content } from '../atoms/Content'
+import { RightCol } from '../atoms/RightCol'
 import { ErrorAlert } from '../molecules/ErrorAlert'
 import { Header } from '../molecules/Header'
 import { MonthSelector } from '../molecules/MonthSelector'
@@ -71,6 +81,19 @@ export const PersonDetail: React.FunctionComponent<
     }
   }, [loading, data])
 
+  const ref = React.useRef<HTMLDivElement>(null)
+
+  const handleExport = () => {
+    const div = ref.current
+    const table = div && div.querySelector('table')
+    if (table)
+      tableToExcel(
+        table,
+        `${period.format('YYYY-MM')} - ${div!.dataset.person}.xlsx`
+      )
+    else message.error('Não há tabela para ser exportada.')
+  }
+
   return (
     <MainLayout header={<Header />} sider={<Sider path={['places', 'list']} />}>
       <Content>
@@ -87,13 +110,18 @@ export const PersonDetail: React.FunctionComponent<
               style={{ padding: 0, marginBottom: 24 }}
             />
             <Row style={{ marginBottom: 24 }}>
-              <Col span={24}>
+              <Col span={16}>
                 <MonthSelector
                   periods={periods}
                   value={period}
                   onChange={setPeriod}
                 />
               </Col>
+              <RightCol span={8}>
+                <Button icon="export" onClick={handleExport}>
+                  Exportar para Excel
+                </Button>
+              </RightCol>
             </Row>
             {loadingReport ? (
               <Skeleton />
@@ -103,6 +131,7 @@ export const PersonDetail: React.FunctionComponent<
               <PersonReport
                 allocations={dataReport!.listPersonAllocations as Allocation[]}
                 person={data!.getPerson as Person}
+                tableRef={ref}
               />
             )}
           </>
