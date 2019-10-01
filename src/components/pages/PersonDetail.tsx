@@ -104,8 +104,8 @@ export const PersonDetail: React.FunctionComponent<
         ) : (
           <>
             <PageHeader
-              title={data.getPerson && data.getPerson.name}
-              subTitle={'Relatório mensal'}
+              title={(data.getPerson && data.getPerson.name) || ''}
+              subTitle={(data.getPerson && data.getPerson.department) || ''}
               onBack={handleBack}
               style={{ padding: 0, marginBottom: 24 }}
             />
