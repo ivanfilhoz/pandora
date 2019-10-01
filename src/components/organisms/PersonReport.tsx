@@ -51,9 +51,9 @@ export const PersonReport: React.FunctionComponent<IProps> = ({
 
   const dataSource = data.map(row => ({
     ...row,
-    place: row.place,
+    place: row.place || '-',
     leader: row.allocation ? (row.leader ? 'Sim' : 'Não') : '-',
-    price: formatCurrency(row.price)
+    price: row.allocation ? formatCurrency(row.price) : '-'
   }))
 
   const worked = filter(row => !!row.allocation, data)
