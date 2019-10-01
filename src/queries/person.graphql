@@ -9,6 +9,15 @@ query listPeople($filter: TablePersonFilterInput) {
   }
 }
 
+query getPerson($id: ID!) {
+  getPerson(id: $id) {
+    id
+    photo
+    name
+    department
+  }
+}
+
 mutation createPerson($input: CreatePersonInput!) {
   createPerson(input: $input) {
     id

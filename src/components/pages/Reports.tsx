@@ -1,28 +1,28 @@
-import * as React from 'react'
-import { MainLayout } from '../templates/MainLayout'
-import { Header } from '../molecules/Header'
-import { Sider } from '../molecules/Sider'
-import { Content } from '../atoms/Content'
-import { Row, Col, Select, Skeleton, Button, message } from 'antd'
-import { RightCol } from '../atoms/RightCol'
-import { MonthSelector } from '../molecules/MonthSelector'
-import moment = require('moment')
+import { Button, Col, message, Row, Select, Skeleton } from 'antd'
 import { Moment } from 'moment'
 import nth from 'ramda/es/nth'
+import * as React from 'react'
+import { RouteComponentProps } from 'react-router'
 import {
+  Allocation,
+  GetPlaceComponent,
+  ListAllocationsComponent,
   ListPlacesComponent,
   Place,
-  ListAllocationsComponent,
-  Allocation,
-  UserGroup,
-  GetPlaceComponent
+  UserGroup
 } from '../../generated/graphql'
-import { ButtonBar } from '../atoms/ButtonBar'
-import { AllocationsReport } from '../organisms/AllocationsReport'
-import { ErrorAlert } from '../molecules/ErrorAlert'
-import { RouteComponentProps } from 'react-router'
-import { route } from '../../util/routes'
 import { tableToExcel } from '../../util/excel'
+import { route } from '../../util/routes'
+import { ButtonBar } from '../atoms/ButtonBar'
+import { Content } from '../atoms/Content'
+import { RightCol } from '../atoms/RightCol'
+import { ErrorAlert } from '../molecules/ErrorAlert'
+import { Header } from '../molecules/Header'
+import { MonthSelector } from '../molecules/MonthSelector'
+import { Sider } from '../molecules/Sider'
+import { AllocationsReport } from '../organisms/AllocationsReport'
+import { MainLayout } from '../templates/MainLayout'
+import moment = require('moment')
 
 interface IParams {
   place?: string
@@ -39,7 +39,7 @@ export const Reports: React.FunctionComponent<RouteComponentProps<IParams>> = ({
   while (initial.isSameOrBefore(moment(), 'month'))
     periods.push(initial.add(1, 'month').clone())
 
-  const [period, setPeriod] = React.useState<Moment>(nth(-2, periods)!)
+  const [period, setPeriod] = React.useState<Moment>(nth(-3, periods)!)
 
   const it = period.clone()
   const variables = {
@@ -67,8 +67,7 @@ export const Reports: React.FunctionComponent<RouteComponentProps<IParams>> = ({
   return (
     <MainLayout
       header={<Header />}
-      sider={<Sider path={['reports', 'list']} />}
-    >
+      sider={<Sider path={['reports', 'list']} />}>
       <Content>
         <Row style={{ marginBottom: 24 }}>
           <Col span={16}>
@@ -85,8 +84,7 @@ export const Reports: React.FunctionComponent<RouteComponentProps<IParams>> = ({
                       loading={loading}
                       disabled={!!error}
                       onChange={handlePlace}
-                      style={{ width: 250 }}
-                    >
+                      style={{ width: 250 }}>
                       {!loading &&
                         !error &&
                         data!.listPlaces!.items!.map(place => (
@@ -117,8 +115,7 @@ export const Reports: React.FunctionComponent<RouteComponentProps<IParams>> = ({
           <GetPlaceComponent
             variables={{
               id: place
-            }}
-          >
+            }}>
             {({
               loading: loadingPlace,
               error: errorPlace,

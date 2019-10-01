@@ -1,21 +1,21 @@
+import { Button, Col, Divider, message, Modal, Row, Skeleton } from 'antd'
+import Title from 'antd/lib/typography/Title'
 import * as React from 'react'
-import { Skeleton, message, Button, Modal, Divider, Col, Row } from 'antd'
+import { MutationFunction } from 'react-apollo'
 import {
-  ListUsersComponent,
-  User,
-  DeleteUserComponent,
   CreateUserComponent,
-  UserOutput,
-  Place
+  DeleteUserComponent,
+  ListUsersComponent,
+  Place,
+  User,
+  UserOutput
 } from '../../generated/graphql'
-import { MutationFn } from 'react-apollo'
-import { UsersList } from './UsersList'
 import { useModal } from '../../util/modal'
-import { UserForm } from './UserForm'
 import { toInput } from '../../util/transform'
 import { ButtonBar } from '../atoms/ButtonBar'
 import { RightCol } from '../atoms/RightCol'
-import Title from 'antd/lib/typography/Title'
+import { UserForm } from './UserForm'
+import { UsersList } from './UsersList'
 
 interface IProps {
   place: Place
@@ -24,7 +24,7 @@ interface IProps {
 export const UsersEditor: React.FunctionComponent<IProps> = ({ place }) => {
   const [EditModal, showEditModal] = useModal(UserForm)
 
-  const handleCreate = (mutation: MutationFn) => () =>
+  const handleCreate = (mutation: MutationFunction) => () =>
     showEditModal({
       onOk: async (input: Partial<User>) => {
         try {
@@ -60,7 +60,7 @@ export const UsersEditor: React.FunctionComponent<IProps> = ({ place }) => {
       }
     })
 
-  const handleDelete = (mutation: MutationFn) => async (user: User) =>
+  const handleDelete = (mutation: MutationFunction) => async (user: User) =>
     Modal.confirm({
       title: 'Esta ação é irreversível!',
       content: `Tem certeza que deseja excluir o usuário "${user.username}"?`,
@@ -102,8 +102,7 @@ export const UsersEditor: React.FunctionComponent<IProps> = ({ place }) => {
       <ListUsersComponent
         variables={{
           place: place.id
-        }}
-      >
+        }}>
         {({ loading: usersLoading, data: usersData }) =>
           usersLoading ? (
             <Skeleton />

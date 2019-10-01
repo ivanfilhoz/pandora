@@ -3,7 +3,9 @@ import ascend from 'ramda/es/ascend'
 import prop from 'ramda/es/prop'
 import sort from 'ramda/es/sort'
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import { Person } from '../../generated/graphql'
+import { route } from '../../util/routes'
 const { Item } = List
 
 interface IProps {
@@ -49,7 +51,11 @@ export const PeopleList: React.FunctionComponent<IProps> = ({
                 src={person.photo || require('../../../assets/photo.jpg')}
               />
             }
-            title={<a href="#">{person.name}</a>}
+            title={
+              <Link to={route('person-detail', { id: person.id })}>
+                {person.name}
+              </Link>
+            }
             description={person.department || ''}
           />
           <div>

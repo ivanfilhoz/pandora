@@ -195,6 +195,7 @@ export type Query = {
   getPlace?: Maybe<Place>,
   listPlaces?: Maybe<PlaceConnection>,
   listAllocations?: Maybe<Array<Maybe<Allocation>>>,
+  listPersonAllocations?: Maybe<Array<Maybe<Allocation>>>,
   listMyAllocations?: Maybe<Array<Maybe<MyAllocation>>>,
   listUsers?: Maybe<Array<Maybe<User>>>,
 };
@@ -226,6 +227,13 @@ export type QueryListPlacesArgs = {
 
 export type QueryListAllocationsArgs = {
   place: Scalars['ID'],
+  from: Scalars['AWSDate'],
+  to: Scalars['AWSDate']
+};
+
+
+export type QueryListPersonAllocationsArgs = {
+  person: Scalars['ID'],
   from: Scalars['AWSDate'],
   to: Scalars['AWSDate']
 };
@@ -440,6 +448,28 @@ export type ListAllocationsQuery = (
   )>>> }
 );
 
+export type ListPersonAllocationsQueryVariables = {
+  person: Scalars['ID'],
+  from: Scalars['AWSDate'],
+  to: Scalars['AWSDate']
+};
+
+
+export type ListPersonAllocationsQuery = (
+  { __typename?: 'Query' }
+  & { listPersonAllocations: Maybe<Array<Maybe<(
+    { __typename?: 'Allocation' }
+    & Pick<Allocation, 'date'>
+    & { place: (
+      { __typename?: 'Place' }
+      & Pick<Place, 'name' | 'personPrice' | 'leaderPrice'>
+    ), people: Array<(
+      { __typename?: 'Person' }
+      & Pick<Person, 'id'>
+    )> }
+  )>>> }
+);
+
 export type SetAllocationMutationVariables = {
   input: AllocationInput
 };
@@ -488,6 +518,19 @@ export type ListPeopleQuery = (
       { __typename?: 'Person' }
       & Pick<Person, 'id' | 'photo' | 'name' | 'department'>
     )>>> }
+  )> }
+);
+
+export type GetPersonQueryVariables = {
+  id: Scalars['ID']
+};
+
+
+export type GetPersonQuery = (
+  { __typename?: 'Query' }
+  & { getPerson: Maybe<(
+    { __typename?: 'Person' }
+    & Pick<Person, 'id' | 'photo' | 'name' | 'department'>
   )> }
 );
 
@@ -677,6 +720,37 @@ export type ListAllocationsComponentProps = Omit<ApolloReactComponents.QueryComp
       
 export type ListAllocationsQueryHookResult = ReturnType<typeof useListAllocationsQuery>;
 export type ListAllocationsQueryResult = ApolloReactCommon.QueryResult<ListAllocationsQuery, ListAllocationsQueryVariables>;
+export const ListPersonAllocationsDocument = gql`
+    query listPersonAllocations($person: ID!, $from: AWSDate!, $to: AWSDate!) {
+  listPersonAllocations(person: $person, from: $from, to: $to) {
+    place {
+      name
+      personPrice
+      leaderPrice
+    }
+    date
+    people {
+      id
+    }
+  }
+}
+    `;
+export type ListPersonAllocationsComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<ListPersonAllocationsQuery, ListPersonAllocationsQueryVariables>, 'query'> & ({ variables: ListPersonAllocationsQueryVariables; skip?: boolean; } | { skip: boolean; });
+
+    export const ListPersonAllocationsComponent = (props: ListPersonAllocationsComponentProps) => (
+      <ApolloReactComponents.Query<ListPersonAllocationsQuery, ListPersonAllocationsQueryVariables> query={ListPersonAllocationsDocument} {...props} />
+    );
+    
+
+    export function useListPersonAllocationsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<ListPersonAllocationsQuery, ListPersonAllocationsQueryVariables>) {
+      return ApolloReactHooks.useQuery<ListPersonAllocationsQuery, ListPersonAllocationsQueryVariables>(ListPersonAllocationsDocument, baseOptions);
+    }
+      export function useListPersonAllocationsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListPersonAllocationsQuery, ListPersonAllocationsQueryVariables>) {
+        return ApolloReactHooks.useLazyQuery<ListPersonAllocationsQuery, ListPersonAllocationsQueryVariables>(ListPersonAllocationsDocument, baseOptions);
+      }
+      
+export type ListPersonAllocationsQueryHookResult = ReturnType<typeof useListPersonAllocationsQuery>;
+export type ListPersonAllocationsQueryResult = ApolloReactCommon.QueryResult<ListPersonAllocationsQuery, ListPersonAllocationsQueryVariables>;
 export const SetAllocationDocument = gql`
     mutation setAllocation($input: AllocationInput!) {
   setAllocation(input: $input) {
@@ -757,6 +831,32 @@ export type ListPeopleComponentProps = Omit<ApolloReactComponents.QueryComponent
       
 export type ListPeopleQueryHookResult = ReturnType<typeof useListPeopleQuery>;
 export type ListPeopleQueryResult = ApolloReactCommon.QueryResult<ListPeopleQuery, ListPeopleQueryVariables>;
+export const GetPersonDocument = gql`
+    query getPerson($id: ID!) {
+  getPerson(id: $id) {
+    id
+    photo
+    name
+    department
+  }
+}
+    `;
+export type GetPersonComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetPersonQuery, GetPersonQueryVariables>, 'query'> & ({ variables: GetPersonQueryVariables; skip?: boolean; } | { skip: boolean; });
+
+    export const GetPersonComponent = (props: GetPersonComponentProps) => (
+      <ApolloReactComponents.Query<GetPersonQuery, GetPersonQueryVariables> query={GetPersonDocument} {...props} />
+    );
+    
+
+    export function useGetPersonQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetPersonQuery, GetPersonQueryVariables>) {
+      return ApolloReactHooks.useQuery<GetPersonQuery, GetPersonQueryVariables>(GetPersonDocument, baseOptions);
+    }
+      export function useGetPersonLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetPersonQuery, GetPersonQueryVariables>) {
+        return ApolloReactHooks.useLazyQuery<GetPersonQuery, GetPersonQueryVariables>(GetPersonDocument, baseOptions);
+      }
+      
+export type GetPersonQueryHookResult = ReturnType<typeof useGetPersonQuery>;
+export type GetPersonQueryResult = ApolloReactCommon.QueryResult<GetPersonQuery, GetPersonQueryVariables>;
 export const CreatePersonDocument = gql`
     mutation createPerson($input: CreatePersonInput!) {
   createPerson(input: $input) {

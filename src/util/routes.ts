@@ -1,17 +1,17 @@
 import find from 'ramda/es/find'
-import propEq from 'ramda/es/propEq'
-import reduce from 'ramda/es/reduce'
 import keys from 'ramda/es/keys'
 import pipe from 'ramda/es/pipe'
 import prop from 'ramda/es/prop'
+import propEq from 'ramda/es/propEq'
+import reduce from 'ramda/es/reduce'
 import replace from 'ramda/es/replace'
-import { PeopleHome } from '../components/pages/PeopleHome'
-import { PlacesHome } from '../components/pages/PlacesHome'
-import { PlaceAllocation } from '../components/pages/PlaceAllocation'
 import { GuestAllocation } from '../components/pages/GuestAllocation'
-import { Reports } from '../components/pages/Reports'
-import { UserGroup } from '../generated/graphql'
 import { GuestReports } from '../components/pages/GuestReports'
+import { PeopleHome } from '../components/pages/PeopleHome'
+import { PersonDetail } from '../components/pages/PersonDetail'
+import { PlaceAllocation } from '../components/pages/PlaceAllocation'
+import { PlacesHome } from '../components/pages/PlacesHome'
+import { Reports } from '../components/pages/Reports'
 
 export const fillRoute = (obj: Params) => (path: string) =>
   reduce((prev, next) => replace(':' + next, obj[next], prev), path, keys(obj))
@@ -107,6 +107,11 @@ export const routes: Route[] = [
     component: PeopleHome
   },
   {
+    key: 'person-detail',
+    path: '/pessoal/:id',
+    component: PersonDetail
+  },
+  {
     key: 'guest-allocation',
     path: '/alocacao',
     component: GuestAllocation
@@ -124,10 +129,10 @@ export const routes: Route[] = [
 ]
 
 export const adminHome = routes[0]
-export const guestHome = routes[3]
+export const guestHome = routes[4]
 
 type Menu = {
-  admin: Group[],
+  admin: Group[]
   guest: Group[]
 }
 

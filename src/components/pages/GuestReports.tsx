@@ -1,23 +1,23 @@
-import * as React from 'react'
-import { MainLayout } from '../templates/MainLayout'
-import { Header } from '../molecules/Header'
-import { Sider } from '../molecules/Sider'
-import { Content } from '../atoms/Content'
-import { Row, Col, Skeleton, Button, message } from 'antd'
-import { RightCol } from '../atoms/RightCol'
-import { MonthSelector } from '../molecules/MonthSelector'
-import moment = require('moment')
+import { Button, Col, message, Row, Skeleton } from 'antd'
 import { Moment } from 'moment'
 import nth from 'ramda/es/nth'
+import * as React from 'react'
 import {
-  MeComponent,
   ListMyAllocationsComponent,
-  MyPlace,
-  MyAllocation
+  MeComponent,
+  MyAllocation,
+  MyPlace
 } from '../../generated/graphql'
-import { AllocationsReport } from '../organisms/AllocationsReport'
-import { ErrorAlert } from '../molecules/ErrorAlert'
 import { tableToExcel } from '../../util/excel'
+import { Content } from '../atoms/Content'
+import { RightCol } from '../atoms/RightCol'
+import { ErrorAlert } from '../molecules/ErrorAlert'
+import { Header } from '../molecules/Header'
+import { MonthSelector } from '../molecules/MonthSelector'
+import { Sider } from '../molecules/Sider'
+import { AllocationsReport } from '../organisms/AllocationsReport'
+import { MainLayout } from '../templates/MainLayout'
+import moment = require('moment')
 
 export const GuestReports: React.FunctionComponent = () => {
   const periods: Moment[] = []
@@ -25,7 +25,7 @@ export const GuestReports: React.FunctionComponent = () => {
   while (initial.isSameOrBefore(moment(), 'month'))
     periods.push(initial.add(1, 'month').clone())
 
-  const [period, setPeriod] = React.useState<Moment>(nth(-2, periods)!)
+  const [period, setPeriod] = React.useState<Moment>(nth(-3, periods)!)
 
   const it = period.clone()
   const variables = {
@@ -49,8 +49,7 @@ export const GuestReports: React.FunctionComponent = () => {
   return (
     <MainLayout
       header={<Header />}
-      sider={<Sider path={['reports', 'list']} />}
-    >
+      sider={<Sider path={['reports', 'list']} />}>
       <Content>
         <Row style={{ marginBottom: 24 }}>
           <Col span={16}>
