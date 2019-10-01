@@ -1,31 +1,24 @@
+import { Divider, message, notification, PageHeader, Skeleton } from 'antd'
+import { MutationUpdaterFn } from 'apollo-boost'
+import { Moment } from 'moment'
 import * as React from 'react'
-import { MainLayout } from '../templates/MainLayout'
-import { Header } from '../molecules/Header'
-import { Sider } from '../molecules/Sider'
-import { Content } from '../atoms/Content'
-import {
-  PageHeader,
-  Skeleton,
-  notification,
-  message,
-  Button,
-  Divider
-} from 'antd'
+import { MutationFunction } from 'react-apollo'
 import { RouteComponentProps } from 'react-router'
-import { route } from '../../util/routes'
 import {
+  Allocation,
   GetPlaceComponent,
   ListAllocationsComponent,
-  Allocation,
-  SetAllocationComponent,
-  Place
+  Place,
+  SetAllocationComponent
 } from '../../generated/graphql'
-import moment = require('moment')
-import { Moment } from 'moment'
+import { route } from '../../util/routes'
+import { Content } from '../atoms/Content'
+import { Header } from '../molecules/Header'
+import { Sider } from '../molecules/Sider'
 import { AllocationsEditor } from '../organisms/AllocationsEditor'
-import { MutationFn, MutationUpdaterFn } from 'react-apollo'
 import { UsersEditor } from '../organisms/UsersEditor'
-import Title from 'antd/lib/typography/Title'
+import { MainLayout } from '../templates/MainLayout'
+import moment = require('moment')
 
 interface IParams {
   id: string
@@ -60,7 +53,7 @@ export const PlaceAllocation: React.FunctionComponent<
     handleBack()
   }
 
-  const handleSave = (mutation: MutationFn) => async (
+  const handleSave = (mutation: MutationFunction) => async (
     date: string,
     people: string[],
     updateHandler?: (variables: any) => MutationUpdaterFn

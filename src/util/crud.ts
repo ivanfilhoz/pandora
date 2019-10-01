@@ -1,12 +1,12 @@
-import { MutationFn } from 'react-apollo'
-import { toInput } from './transform'
 import { message, Modal } from 'antd'
+import { MutationFunction } from 'react-apollo'
 import { ModalProps } from './modal'
+import { toInput } from './transform'
 
 type CrudHook<T> = {
-  create: (mutation: MutationFn) => void
-  update: (mutation: MutationFn, entity: T) => void
-  remove: (mutation: MutationFn, entity: T) => void
+  create: (mutation: MutationFunction) => void
+  update: (mutation: MutationFunction, entity: T) => void
+  remove: (mutation: MutationFunction, entity: T) => void
 }
 
 export interface CrudModal<T> extends ModalProps {
@@ -33,7 +33,7 @@ export const generateCRUD = <T extends Entity>({
   editModal,
   refetch
 }: IAttributes<T>): CrudHook<T> => {
-  const create = (mutation: MutationFn) =>
+  const create = (mutation: MutationFunction) =>
     editModal({
       onOk: async (input: Partial<T>) => {
         try {
@@ -51,7 +51,7 @@ export const generateCRUD = <T extends Entity>({
       }
     })
 
-  const update = (mutation: MutationFn, entity: T) =>
+  const update = (mutation: MutationFunction, entity: T) =>
     editModal({
       entity,
       onOk: async (input: Partial<T>) => {
@@ -70,7 +70,7 @@ export const generateCRUD = <T extends Entity>({
       }
     })
 
-  const remove = (mutation: MutationFn, entity: T) =>
+  const remove = (mutation: MutationFunction, entity: T) =>
     Modal.confirm({
       title: 'Esta ação é irreversível!',
       content: `Tem certeza que deseja excluir ${x} ${entityName.toLowerCase()} "${
