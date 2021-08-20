@@ -1,4 +1,4 @@
-import { Avatar, Card, Col, Icon, Row, Select, Tag } from 'antd'
+import { Avatar, Card, Col, Icon, Modal, Row, Select, Tag } from 'antd'
 import Meta from 'antd/lib/card/Meta'
 import Text from 'antd/lib/typography/Text'
 import equals from 'ramda/es/equals'
@@ -44,6 +44,20 @@ export const Allocator: React.FunctionComponent<IProps> = ({
   const handleCrown = (person: Person) => () =>
     onChange([person.id, ...takeOff(person)])
   const handleDisallocate = (person: Person) => () => onChange(takeOff(person))
+  const handlePhoto = (person: Person) => () =>
+    Modal.info({
+      title: person.photo ? `Foto de ${person.name}` : 'Oops!',
+      content: person.photo ? (
+        <img
+          src={person.photo}
+          alt={`Foto de ${person.name}`}
+          style={{ width: '100%' }}
+        />
+      ) : (
+        `${person.name} não tem foto cadastrada.`
+      ),
+      okText: 'Certo!'
+    })
 
   const handleFilter = (inputValue: string, option: React.ReactElement) => {
     const parts = option.props.children as React.Component[]
@@ -114,26 +128,27 @@ export const Allocator: React.FunctionComponent<IProps> = ({
             <Card
               key={person.name}
               hoverable={!readOnly}
-              actions={
-                readOnly
-                  ? []
-                  : [
-                      index ? (
-                        <Icon
-                          type="crown"
-                          title="Definir como líder"
-                          onClick={handleCrown(person)}
-                        />
-                      ) : (
-                        undefined
-                      ),
-                      <Icon
-                        type="delete"
-                        title="Desalocar"
-                        onClick={handleDisallocate(person)}
-                      />
-                    ].filter(_ => _)
-              }
+              actions={[
+                !!index && !readOnly && (
+                  <Icon
+                    type="crown"
+                    title="Definir como líder"
+                    onClick={handleCrown(person)}
+                  />
+                ),
+                <Icon
+                  type="camera"
+                  title="Ver foto"
+                  onClick={handlePhoto(person)}
+                />,
+                !readOnly && (
+                  <Icon
+                    type="delete"
+                    title="Desalocar"
+                    onClick={handleDisallocate(person)}
+                  />
+                )
+              ].filter(_ => _)}
               style={{ position: 'relative' }}>
               <Meta
                 avatar={
