@@ -4,7 +4,14 @@ query listPeople($filter: TablePersonFilterInput) {
       id
       photo
       name
+      fullName
       department
+      graduation
+      courses
+      phone
+      rg
+      cpf
+      bankDetails
     }
   }
 }
@@ -14,7 +21,14 @@ query getPerson($id: ID!) {
     id
     photo
     name
+    fullName
     department
+    graduation
+    courses
+    phone
+    rg
+    cpf
+    bankDetails
   }
 }
 

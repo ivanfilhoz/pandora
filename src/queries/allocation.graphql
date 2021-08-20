@@ -3,6 +3,7 @@ query listAllocations($place: ID!, $from: AWSDate!, $to: AWSDate!) {
     date
     people {
       id
+      photo
       name
       department
     }
