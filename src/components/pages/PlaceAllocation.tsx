@@ -56,13 +56,15 @@ export const PlaceAllocation: React.FunctionComponent<RouteComponentProps<
   const handleSave = (mutation: MutationFunction) => async (
     date: string,
     people: string[],
-    updateHandler?: (variables: any) => MutationUpdaterFn
+    updateHandler?: (variables: any) => MutationUpdaterFn,
+    optimisticResponse?: Allocation
   ) => {
     try {
       await mutation({
         variables: { input: { place: id, date, people } },
         refetchQueries: ['listAllocations'],
-        update: updateHandler ? updateHandler(variables) : undefined
+        update: updateHandler?.(variables),
+        optimisticResponse
       })
       message.success('Alocação salva com sucesso!')
     } catch (err) {

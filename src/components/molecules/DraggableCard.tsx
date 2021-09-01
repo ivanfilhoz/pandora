@@ -5,7 +5,6 @@ import { useDrag, useDrop } from 'react-dnd'
 import { Person } from '../../generated/graphql'
 
 interface IProps {
-  isDragging?: boolean
   readOnly?: boolean
   index: number
   person: Person
@@ -17,7 +16,6 @@ interface IProps {
 }
 
 export const DraggableCard: React.FC<IProps> = ({
-  isDragging,
   index,
   person,
   readOnly,
@@ -40,15 +38,20 @@ export const DraggableCard: React.FC<IProps> = ({
     []
   )
 
-  const [{ background }, dropRef] = useDrop(() => ({
-    accept: 'DraggableCard',
-    canDrop: (item: Person) => item.id !== person.id,
-    drop: (item: Person) => onDrop?.(person, item),
-    collect: monitor => ({
-      background:
-        monitor.isOver() && monitor.canDrop() ? '#eeeeee' : 'transparent'
-    })
-  }))
+  const [{ background }, dropRef] = useDrop(
+    () => ({
+      accept: 'DraggableCard',
+      canDrop: (item: Person) => item.id !== person.id,
+      drop: (item: Person) => {
+        onDrop?.(person, item)
+      },
+      collect: monitor => ({
+        background:
+          monitor.isOver() && monitor.canDrop() ? '#eeeeee' : 'transparent'
+      })
+    }),
+    [onDrop]
+  )
 
   return (
     <div ref={dropRef}>

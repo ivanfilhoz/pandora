@@ -1,10 +1,6 @@
 import { Col, Modal, Row, Select, Typography } from 'antd'
 import Text from 'antd/lib/typography/Text'
 import * as R from 'ramda'
-import equals from 'ramda/es/equals'
-import includes from 'ramda/es/includes'
-import pluck from 'ramda/es/pluck'
-import reject from 'ramda/es/reject'
 import * as React from 'react'
 import { ListPeopleComponent, Person } from '../../generated/graphql'
 import { lowerContains } from '../../util/filter'
@@ -29,9 +25,10 @@ export const Allocator: React.FunctionComponent<IProps> = ({
   readOnly
 }) => {
   const [person, setPerson] = React.useState<string | undefined>(undefined)
-  const allocated = pluck('id', people)
-  const isAvailable = (person: Person) => !includes(person.id)(allocated)
-  const takeOff = (person: Person) => reject(equals(person.id), allocated)
+  const allocated = React.useMemo(() => R.pluck('id', people), [people])
+
+  const isAvailable = (person: Person) => !R.includes(person.id)(allocated)
+  const takeOff = (person: Person) => R.reject(R.equals(person.id), allocated)
 
   React.useEffect(() => {
     if (person && allocated.includes(person)) setPerson(undefined)
@@ -58,16 +55,19 @@ export const Allocator: React.FunctionComponent<IProps> = ({
       ),
       okText: 'Certo!'
     })
-  const handleDrop = (targetPerson: Person, droppedPerson: Person) => {
-    const targetIndex = allocated.indexOf(targetPerson.id)
-    const droppedIndex = allocated.indexOf(droppedPerson.id)
-    const swapped = R.pipe(
-      R.set(R.lensIndex(targetIndex), droppedPerson.id),
-      R.set(R.lensIndex(droppedIndex), targetPerson.id)
-    )(allocated)
+  const handleDrop = React.useCallback(
+    (targetPerson: Person, droppedPerson: Person) => {
+      const targetIndex = allocated.indexOf(targetPerson.id)
+      const droppedIndex = allocated.indexOf(droppedPerson.id)
+      const swapped = R.pipe(
+        R.set(R.lensIndex(targetIndex), droppedPerson.id),
+        R.set(R.lensIndex(droppedIndex), targetPerson.id)
+      )(allocated)
 
-    onChange(swapped)
-  }
+      onChange(swapped)
+    },
+    [allocated]
+  )
 
   const handleFilter = (inputValue: string, option: React.ReactElement) => {
     const parts = option.props.children as React.Component[]
@@ -167,7 +167,6 @@ export const Allocator: React.FunctionComponent<IProps> = ({
                     index={index}
                     person={person}
                     readOnly={readOnly}
-                    onClickCrown={handleCrown}
                     onClickViewPhoto={handlePhoto}
                     onClickDisallocate={handleDisallocate}
                     onDrop={handleDrop}

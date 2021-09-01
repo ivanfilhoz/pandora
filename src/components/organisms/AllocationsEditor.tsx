@@ -28,11 +28,10 @@ export const AllocationsEditor: React.FunctionComponent<IProps> = ({
   readOnly,
   headcount
 }) => {
-  const allocation = allocations.find(allocation =>
-    date.isSame(allocation.date, 'day')
+  const allocation = React.useMemo(
+    () => allocations.find(allocation => date.isSame(allocation.date, 'day')),
+    [allocations, date]
   )
-
-  const getPeople = () => (allocation ? allocation.people : [])
 
   const handleAllocator = (people: string[]) => {
     onSave!(date.format('YYYY-MM-DD'), people, variables => proxy => {
@@ -92,7 +91,7 @@ export const AllocationsEditor: React.FunctionComponent<IProps> = ({
       <div style={{ flex: '1 0 300px', padding: 12 }}>
         <Allocator
           headcount={headcount}
-          people={getPeople()}
+          people={allocation?.people || []}
           loading={loading}
           onChange={handleAllocator}
           readOnly={readOnly}
