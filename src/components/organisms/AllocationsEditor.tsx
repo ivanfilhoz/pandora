@@ -14,7 +14,8 @@ interface IProps {
   onSave?: (
     date: string,
     people: string[],
-    updateHandler: (variables: any) => MutationUpdaterFn
+    updateHandler?: (variables: any) => MutationUpdaterFn,
+    optimisticResponse?: Allocation
   ) => void
   readOnly?: boolean
 }
@@ -34,36 +35,40 @@ export const AllocationsEditor: React.FunctionComponent<IProps> = ({
   )
 
   const handleAllocator = (people: string[]) => {
-    onSave!(date.format('YYYY-MM-DD'), people, variables => proxy => {
-      const data = proxy.readQuery({
-        query: ListAllocationsDocument,
-        variables
-      }) as { listAllocations: Allocation[] }
-      const listAllocations = data.listAllocations.map(allocation => {
-        if (!date.isSame(allocation.date, 'day')) return allocation
-        const updated = {
-          ...allocation,
-          people: people.map(id => {
-            const person = allocation.people.find(person => person.id === id)
-            return {
-              __typename: 'Person',
-              id,
-              name: '',
-              department: '',
-              ...(person || {})
-            }
-          })
-        }
-        return updated
-      })
-      proxy.writeQuery({
-        query: ListAllocationsDocument,
-        variables,
-        data: {
-          listAllocations
+    const updatedAllocation: Allocation = {
+      ...allocation!,
+      people: people.map(id => {
+        const person = allocation!.people.find(person => person.id === id)
+        return {
+          __typename: 'Person',
+          id,
+          name: '',
+          department: '',
+          ...(person || {})
         }
       })
-    })
+    }
+    onSave!(
+      date.format('YYYY-MM-DD'),
+      people,
+      variables => proxy => {
+        const data = proxy.readQuery({
+          query: ListAllocationsDocument,
+          variables
+        }) as { listAllocations: Allocation[] }
+        const listAllocations = data.listAllocations.map(allocation =>
+          date.isSame(allocation.date, 'day') ? updatedAllocation : allocation
+        )
+        proxy.writeQuery({
+          query: ListAllocationsDocument,
+          variables,
+          data: {
+            listAllocations
+          }
+        })
+      },
+      updatedAllocation
+    )
   }
 
   return (

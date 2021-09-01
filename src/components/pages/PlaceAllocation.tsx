@@ -59,6 +59,7 @@ export const PlaceAllocation: React.FunctionComponent<RouteComponentProps<
     updateHandler?: (variables: any) => MutationUpdaterFn,
     optimisticResponse?: Allocation
   ) => {
+    console.log(optimisticResponse)
     try {
       await mutation({
         variables: { input: { place: id, date, people } },
