@@ -24,9 +24,9 @@ interface IParams {
   id: string
 }
 
-export const PlaceAllocation: React.FunctionComponent<
-  RouteComponentProps<IParams>
-> = ({
+export const PlaceAllocation: React.FunctionComponent<RouteComponentProps<
+  IParams
+>> = ({
   match: {
     params: { id }
   },
@@ -96,7 +96,7 @@ export const PlaceAllocation: React.FunctionComponent<
                         loading: allocationsLoading,
                         data: allocationsData
                       }) =>
-                        allocationsLoading ? (
+                        allocationsLoading && !allocationsData ? (
                           <Skeleton />
                         ) : (
                           <AllocationsEditor

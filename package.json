@@ -10,7 +10,6 @@
   },
   "author": "Ivan Filho",
   "license": "ISC",
-  "prettier": "prettier-config-standard",
   "dependencies": {
     "@apollo/react-components": "^3.1.5",
     "@apollo/react-hooks": "^3.1.5",
@@ -26,6 +25,8 @@
     "ramda": "^0.26.1",
     "react": "^16.14.0",
     "react-apollo": "^3.1.5",
+    "react-dnd": "^14.0.3",
+    "react-dnd-html5-backend": "^14.0.1",
     "react-dom": "^16.14.0",
     "react-input-mask": "^2.0.4",
     "react-router-dom": "^5.2.0",
@@ -60,6 +61,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://gitlab.com/ivanslf/pandora.git"
+    "url": "git://github.com/ivanfilhoz/pandora.git"
   }
 }

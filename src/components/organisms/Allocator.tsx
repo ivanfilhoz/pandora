@@ -1,6 +1,6 @@
-import { Avatar, Card, Col, Icon, Modal, Row, Select, Tag } from 'antd'
-import Meta from 'antd/lib/card/Meta'
+import { Col, Modal, Row, Select, Typography } from 'antd'
 import Text from 'antd/lib/typography/Text'
+import * as R from 'ramda'
 import equals from 'ramda/es/equals'
 import includes from 'ramda/es/includes'
 import pluck from 'ramda/es/pluck'
@@ -10,6 +10,7 @@ import { ListPeopleComponent, Person } from '../../generated/graphql'
 import { lowerContains } from '../../util/filter'
 import { ButtonBar } from '../atoms/ButtonBar'
 import { RightCol } from '../atoms/RightCol'
+import { DraggableCard } from '../molecules/DraggableCard'
 import { EmptyAlert } from '../molecules/EmptyAlert'
 
 interface IProps {
@@ -31,7 +32,6 @@ export const Allocator: React.FunctionComponent<IProps> = ({
   const allocated = pluck('id', people)
   const isAvailable = (person: Person) => !includes(person.id)(allocated)
   const takeOff = (person: Person) => reject(equals(person.id), allocated)
-  const full = people.length >= headcount
 
   React.useEffect(() => {
     if (person && allocated.includes(person)) setPerson(undefined)
@@ -58,6 +58,16 @@ export const Allocator: React.FunctionComponent<IProps> = ({
       ),
       okText: 'Certo!'
     })
+  const handleDrop = (targetPerson: Person, droppedPerson: Person) => {
+    const targetIndex = allocated.indexOf(targetPerson.id)
+    const droppedIndex = allocated.indexOf(droppedPerson.id)
+    const swapped = R.pipe(
+      R.set(R.lensIndex(targetIndex), droppedPerson.id),
+      R.set(R.lensIndex(droppedIndex), targetPerson.id)
+    )(allocated)
+
+    onChange(swapped)
+  }
 
   const handleFilter = (inputValue: string, option: React.ReactElement) => {
     const parts = option.props.children as React.Component[]
@@ -81,18 +91,14 @@ export const Allocator: React.FunctionComponent<IProps> = ({
                   {({ loading: loadingPeople, error, data }) => (
                     <Select
                       showSearch
-                      placeholder={
-                        full
-                          ? 'Alocação completa'
-                          : 'Selecione uma pessoa para alocar'
-                      }
+                      placeholder='Selecione uma pessoa para alocar'
                       value={person}
                       loading={loading || loadingPeople || !!person}
-                      optionFilterProp="children"
+                      optionFilterProp='children'
                       filterOption={handleFilter}
-                      disabled={full}
                       onChange={handleSelect}
-                      style={{ width: 300 }}>
+                      style={{ width: 300 }}
+                    >
                       {!loadingPeople &&
                         !error &&
                         data!
@@ -101,7 +107,7 @@ export const Allocator: React.FunctionComponent<IProps> = ({
                             <Select.Option key={person!.id} value={person!.id}>
                               {/* {person!.name} */}
                               <Text>{person!.name}</Text>
-                              <Text type="secondary">
+                              <Text type='secondary'>
                                 {' '}
                                 / {person!.department}
                               </Text>
@@ -117,69 +123,60 @@ export const Allocator: React.FunctionComponent<IProps> = ({
       </Row>
 
       {people.length ? (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gridTemplateRows: 'min-content',
-            gridGap: 12
-          }}>
-          {people.map((person, index) => (
-            <Card
-              key={person.name}
-              hoverable={!readOnly}
-              actions={[
-                !!index && !readOnly && (
-                  <Icon
-                    type="crown"
-                    title="Definir como líder"
-                    onClick={handleCrown(person)}
-                  />
-                ),
-                <Icon
-                  type="camera"
-                  title="Ver foto"
-                  onClick={handlePhoto(person)}
-                />,
-                !readOnly && (
-                  <Icon
-                    type="delete"
-                    title="Desalocar"
-                    onClick={handleDisallocate(person)}
-                  />
-                )
-              ].filter(_ => _)}
-              style={{ position: 'relative' }}>
-              <Meta
-                avatar={
-                  <Avatar
-                    alt={person.photo ? `Foto de ${person.name}` : 'Sem foto'}
-                    src={person.photo || require('../../../assets/photo.jpg')}
-                  />
-                }
-                title={
-                  <>
-                    {person.name}
-                    {!index && (
-                      <Tag
-                        color="blue"
-                        style={{
-                          position: 'absolute',
-                          left: -20,
-                          top: 0,
-                          transform: 'rotate(-45deg)'
-                        }}>
-                        <Icon type="crown" style={{ marginRight: 5 }} />
-                        Líder
-                      </Tag>
-                    )}
-                  </>
-                }
-                description={person.department}
+        <>
+          <Typography.Title level={4}>Efetivo</Typography.Title>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gridTemplateRows: 'min-content',
+              gridGap: 12
+            }}
+          >
+            {people.slice(0, headcount).map((person, index) => (
+              <DraggableCard
+                key={person.name}
+                index={index}
+                person={person}
+                readOnly={readOnly}
+                onClickCrown={handleCrown}
+                onClickViewPhoto={handlePhoto}
+                onClickDisallocate={handleDisallocate}
+                onDrop={handleDrop}
               />
-            </Card>
-          ))}
-        </div>
+            ))}
+          </div>
+
+          {people.length > headcount && (
+            <>
+              <Typography.Title level={4} style={{ marginTop: 32 }}>
+                Suplentes
+              </Typography.Title>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  gridTemplateRows: 'min-content',
+                  gridGap: 12
+                }}
+              >
+                {people.slice(headcount).map((person, index) => (
+                  <DraggableCard
+                    additional
+                    key={person.name}
+                    index={index}
+                    person={person}
+                    readOnly={readOnly}
+                    onClickCrown={handleCrown}
+                    onClickViewPhoto={handlePhoto}
+                    onClickDisallocate={handleDisallocate}
+                    onDrop={handleDrop}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </>
       ) : (
         <EmptyAlert />
       )}

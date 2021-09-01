@@ -1,14 +1,9 @@
-import * as React from 'react'
-import {
-  Allocation,
-  ListAllocationsDocument,
-  Person
-} from '../../generated/graphql'
-import { AllocationsCalendar } from './AllocationsCalendar'
-import moment = require('moment')
+import { MutationUpdaterFn } from 'apollo-boost'
 import { Moment } from 'moment'
+import * as React from 'react'
+import { Allocation, ListAllocationsDocument } from '../../generated/graphql'
+import { AllocationsCalendar } from './AllocationsCalendar'
 import { Allocator } from './Allocator'
-import { MutationUpdaterFn } from 'react-apollo'
 
 interface IProps {
   headcount: number

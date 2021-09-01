@@ -25,7 +25,7 @@ export const AllocationsCalendar: React.FunctionComponent<IProps> = ({
     )
     const count = allocation ? allocation.people.length : 0
     const props: IconProps =
-      count === headcount
+      count >= headcount
         ? {
             type: 'check-circle',
             twoToneColor: 'green'
@@ -40,7 +40,7 @@ export const AllocationsCalendar: React.FunctionComponent<IProps> = ({
             twoToneColor: 'red'
           }
 
-    return <Icon {...props} theme="twoTone" title={count + ' alocações'} />
+    return <Icon {...props} theme='twoTone' title={count + ' alocações'} />
   }
 
   return (
