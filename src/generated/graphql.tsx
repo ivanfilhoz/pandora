@@ -513,7 +513,7 @@ export type ListMyAllocationsQuery = (
     & Pick<MyAllocation, 'date'>
     & { people: Array<(
       { __typename?: 'Person' }
-      & Pick<Person, 'id' | 'name' | 'department'>
+      & Pick<Person, 'id' | 'name' | 'photo' | 'department'>
     )> }
   )>>> }
 );
@@ -850,6 +850,7 @@ export const ListMyAllocationsDocument = gql`
     people {
       id
       name
+      photo
       department
     }
   }

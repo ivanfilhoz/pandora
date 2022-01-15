@@ -1,8 +1,8 @@
+import { Icon, Layout, Menu, Spin } from 'antd'
 import * as React from 'react'
-import { Layout, Menu, Icon, Spin } from 'antd'
-import { menu } from '../../util/routes'
 import { Link } from 'react-router-dom'
-import { MeComponent, UserGroup } from '../../generated/graphql'
+import { MeComponent } from '../../generated/graphql'
+import { menu } from '../../util/routes'
 const { SubMenu, Item } = Menu
 const { Sider: RawSider } = Layout
 
@@ -27,12 +27,11 @@ export const Sider: React.FunctionComponent<IProps> = ({ path }) => (
             </div>
           )
 
-        const items =
-          menu[data!.me!.group === UserGroup.Admins ? 'admin' : 'guest']
+        const items = menu[data!.me!.group]
 
         return (
           <Menu
-            mode="inline"
+            mode='inline'
             defaultOpenKeys={[path[0]]}
             selectedKeys={[path.join('-')]}
             style={{ height: '100%', borderRight: 0 }}

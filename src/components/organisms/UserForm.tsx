@@ -1,6 +1,6 @@
+import { Form, Input, Modal, Select } from 'antd'
 import * as React from 'react'
 import { User, UserGroup } from '../../generated/graphql'
-import { Modal, Form, Input, Row, Col, Select } from 'antd'
 import { CrudModal } from '../../util/crud'
 import { InnerForm } from '../atoms/InnerForm'
 
@@ -44,30 +44,30 @@ export const UserForm: React.FunctionComponent<IProps> = ({
 
   return (
     <Modal
-      title={entity ? 'Editar estabelecimento' : 'Novo estabelecimento'}
+      title={entity ? 'Editar acesso' : 'Novo acesso'}
       visible
       onOk={handleOk}
-      okText={entity ? 'Salvar alterações' : 'Criar estabelecimento'}
+      okText={entity ? 'Salvar alterações' : 'Criar acesso'}
       confirmLoading={loading}
       onCancel={onCancel}
-      cancelText="Cancelar"
+      cancelText='Cancelar'
     >
       <InnerForm onOk={handleOk}>
-        <Form.Item label="Nome de usuário">
+        <Form.Item label='Nome de usuário'>
           <Input
-            name="username"
+            name='username'
             value={input.username || ''}
             onChange={handleInput}
           />
         </Form.Item>
-        <Form.Item label="E-mail">
+        <Form.Item label='E-mail'>
           <Input
-            name="email"
+            name='email'
             value={input.email || ''}
             onChange={handleInput}
           />
         </Form.Item>
-        <Form.Item label="Cargo">
+        <Form.Item label='Cargo'>
           <Select
             value={input.group}
             onChange={handleSelect}

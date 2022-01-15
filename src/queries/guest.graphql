@@ -4,6 +4,7 @@ query listMyAllocations($from: AWSDate!, $to: AWSDate!) {
     people {
       id
       name
+      photo
       department
     }
   }

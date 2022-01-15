@@ -12,19 +12,16 @@ import { PersonDetail } from '../components/pages/PersonDetail'
 import { PlaceAllocation } from '../components/pages/PlaceAllocation'
 import { PlacesHome } from '../components/pages/PlacesHome'
 import { Reports } from '../components/pages/Reports'
+import { UserGroup } from '../generated/graphql'
 
 export const fillRoute = (obj: Params) => (path: string) =>
   reduce((prev, next) => replace(':' + next, obj[next], prev), path, keys(obj))
 
 export const route = (key: string, params: Params = {}) =>
-  pipe(
-    find(propEq('key', key))!,
-    prop('path'),
-    fillRoute(params)
-  )(routes)
+  pipe(find(propEq('key', key))!, prop('path'), fillRoute(params))(routes)
 
 export const menu: Menu = {
-  admin: [
+  [UserGroup.Admins]: [
     {
       key: 'places',
       label: 'Estabelecimentos',
@@ -62,7 +59,47 @@ export const menu: Menu = {
       ]
     }
   ],
-  guest: [
+  [UserGroup.Managers]: [
+    {
+      key: 'allocation',
+      label: 'Alocação',
+      icon: 'calendar',
+      items: [
+        {
+          key: 'list',
+          label: 'Lista',
+          path: '/alocacao'
+        }
+      ]
+    },
+    {
+      key: 'reports',
+      label: 'Fatura',
+      icon: 'dollar',
+      items: [
+        {
+          key: 'list',
+          label: 'Lista',
+          path: '/fatura'
+        }
+      ]
+    }
+  ],
+  [UserGroup.Supervisors]: [
+    {
+      key: 'allocation',
+      label: 'Alocação',
+      icon: 'calendar',
+      items: [
+        {
+          key: 'list',
+          label: 'Lista',
+          path: '/alocacao'
+        }
+      ]
+    }
+  ],
+  [UserGroup.Assistants]: [
     {
       key: 'allocation',
       label: 'Alocação',
@@ -132,8 +169,7 @@ export const adminHome = routes[0]
 export const guestHome = routes[4]
 
 type Menu = {
-  admin: Group[]
-  guest: Group[]
+  [key in UserGroup]: Group[]
 }
 
 type Group = {

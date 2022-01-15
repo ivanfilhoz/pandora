@@ -38,7 +38,7 @@ export const AllocationsEditor: React.FunctionComponent<IProps> = ({
     const updatedAllocation: Allocation = {
       ...allocation!,
       people: people.map(id => {
-        const person = allocation!.people.find(person => person.id === id)
+        const person = allocation!?.people.find(person => person.id === id)
         return {
           __typename: 'Person',
           id,
